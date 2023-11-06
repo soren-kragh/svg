@@ -75,13 +75,6 @@ std::string Canvas::GenSVG( U margin )
     << " xmlns=\"http://www.w3.org/2000/svg\""
     << " width=" << canvas_w.SVG()
     << " height=" << canvas_h.SVG()
-/*
-    << " viewBox=\"0 0 " << canvas_w.SVG( false ) << ' ' << canvas_h.SVG( false ) << '"';
-  if ( !Background()->IsClear() ) {
-    oss << " style=\"background-color:" << Background()->SVG( false ) << '"';
-  }
-  oss
-*/
     << " stroke-linecap=\"round\""
     << '>' << "\n";
 
