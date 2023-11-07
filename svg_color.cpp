@@ -14,7 +14,7 @@
 //  <http://www.gnu.org/licenses/>.
 //
 
-#include <unordered_map>
+#include <map>
 
 #include <svg_color.h>
 
@@ -28,7 +28,7 @@ struct RGB {
   uint8_t b;
 };
 
-static std::unordered_map<ColorName, RGB> color_table = {
+static std::map< ColorName, RGB > color_table = {
   { Black  , {0x00, 0x00, 0x00} },
   { Red    , {0xFF, 0x00, 0x00} },
   { Green  , {0x00, 0xFF, 0x00} },
