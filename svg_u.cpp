@@ -24,7 +24,7 @@ std::string U::SVG( bool quoted )
 {
   std::ostringstream oss;
   if ( quoted ) oss << '"';
-  int64_t x = std::llround( value * 1000.0 );
+  int64_t x = llround( value * 1000.0 );
   if ( x < 0 ) {
     oss << '-';
     x = -x;
