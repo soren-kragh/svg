@@ -36,7 +36,7 @@ Group::~Group( void )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Group::Add( Object* object )
+Object* Group::Add( Object* object )
 {
   if ( object->parrent_group != NULL ) {
     SVG_FATAL( "SVG::Group::Add: object cannot be added to a group more than once" );
@@ -44,6 +44,7 @@ void Group::Add( Object* object )
   object->parrent_group = this;
   objects.push_back( object );
   last = object;
+  return object;
 }
 
 void Group::DeleteFront( void )

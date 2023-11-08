@@ -36,7 +36,7 @@ public:
   Group( void );
   ~Group( void );
 
-  void Add( Object* object );
+  Object* Add( Object* object );
 
   void DeleteFront( void );
   void DeleteBack( void );
