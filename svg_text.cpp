@@ -120,14 +120,17 @@ void Text::GenSVG(
   oss
     << indent << "<g text-anchor=\"middle\""
     << Attr()->SVG( true ) << '>' << "\n";
-  for ( char c : str ) {
+  for ( unsigned char c : str ) {
     std::string s;
-    if ( c < ' ' ) c = ' ';
     switch ( c ) {
-      case '<' : s += "&lt;"; break;
-      case '>' : s += "&gt;"; break;
-      case '&' : s += "&amp;"; break;
-      default  : s += c;
+      case '<'  : s += "&lt;"; break;
+      case '>'  : s += "&gt;"; break;
+      case '&'  : s += "&amp;"; break;
+      case 0xE6 : s += "&#956;"; break;
+      default : {
+        if ( c < ' ' || c > 0x7E ) c = ' ';
+        s += c;
+      }
     }
     oss
       << indent << "  <text"
