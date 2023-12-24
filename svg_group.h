@@ -41,8 +41,8 @@ public:
   void DeleteFront( void );
   void DeleteBack( void );
 
-  // Send lastly added object to the back.
-  void LastToBack( void );
+  // Send current front object to the back.
+  void FrontToBack( void );
 
   // Creates new group, adds it, then returns it.
   Group* AddNewGroup( void );

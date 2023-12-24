@@ -52,6 +52,7 @@ void Group::DeleteFront( void )
   if ( objects.size() > 0 ) {
     Object* obj = objects.back();
     objects.pop_back();
+    if ( last == obj ) last = NULL;
     delete obj;
   }
 }
@@ -61,17 +62,17 @@ void Group::DeleteBack( void )
   if ( objects.size() > 0 ) {
     Object* obj = objects.front();
     objects.pop_front();
+    if ( last == obj ) last = NULL;
     delete obj;
   }
 }
 
-void Group::LastToBack( void )
+void Group::FrontToBack( void )
 {
-  if ( last == NULL ) {
-    SVG_FATAL( "SVG::Group::LastToBack: operation on NULL object" );
+  if ( objects.size() > 0 ) {
+    objects.push_front( objects.back() );
+    objects.pop_back();
   }
-  objects.push_front( objects.back() );
-  objects.pop_back();
 }
 
 Group* Group::AddNewGroup( void )
