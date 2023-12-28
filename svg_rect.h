@@ -31,6 +31,7 @@ public:
     U x2, U y2,
     U corner_r = 0
   );
+  Rect( Point p1, Point p2, U corner_r = 0 );
 
 private:
 

@@ -26,6 +26,7 @@ class Ellipse : public Object
 public:
 
   Ellipse( U cx, U cy, U rx, U ry );
+  Ellipse( Point c, U rx, U ry );
 
 private:
 

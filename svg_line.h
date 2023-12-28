@@ -29,6 +29,7 @@ public:
     U x1, U y1,
     U x2, U y2
   );
+  Line( Point p1, Point p2 );
 
 private:
 

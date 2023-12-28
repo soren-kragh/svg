@@ -20,12 +20,16 @@ using namespace SVG;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Circle::Circle(
-  U cx, U cy, U radius
-)
+Circle::Circle( U cx, U cy, U radius )
 {
   center.x = cx;
   center.y = cy;
+  this->radius = radius;
+}
+
+Circle::Circle( Point c, U radius )
+{
+  center = c;
   this->radius = radius;
 }
 

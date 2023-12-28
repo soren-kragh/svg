@@ -26,20 +26,17 @@ Rect::Rect(
   U corner_r
 )
 {
-  if ( x1 < x2 ) {
-    p1.x = x1;
-    p2.x = x2;
-  } else {
-    p1.x = x2;
-    p2.x = x1;
-  }
-  if ( y1 < y2 ) {
-    p1.y = y1;
-    p2.y = y2;
-  } else {
-    p1.y = y2;
-    p2.y = y1;
-  }
+  if ( x1 > x2 ) std::swap( x1, x2 );
+  if ( y1 > y2 ) std::swap( y1, y2 );
+  new( &p1 ) Point( x1, y1 );
+  new( &p2 ) Point( x2, y2 );
+  this->corner_r = corner_r;
+}
+
+Rect::Rect( Point p1, Point p2, U corner_r )
+{
+  if ( p1.x > p2.x ) std::swap( p1.x, p2.x );
+  if ( p1.y > p2.y ) std::swap( p1.y, p2.y );
   this->corner_r = corner_r;
 }
 

@@ -30,6 +30,15 @@ Ellipse::Ellipse(
   this->ry = ry;
 }
 
+Ellipse::Ellipse(
+  Point c, U rx, U ry
+)
+{
+  center = c;
+  this->rx = rx;
+  this->ry = ry;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void Ellipse::ComputeFocusPoints(

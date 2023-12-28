@@ -26,6 +26,7 @@ class Circle : public Object
 public:
 
   Circle( U cx, U cy, U radius );
+  Circle( Point c, U radius );
 
 private:
 

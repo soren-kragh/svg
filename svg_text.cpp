@@ -20,13 +20,16 @@ using namespace SVG;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Text::Text(
-  U x, U y,
-  std::string str
-)
+Text::Text( U x, U y, std::string str )
 {
   p.x = x;
   p.y = y;
+  this->str = str;
+}
+
+Text::Text( Point p, std::string str )
+{
+  this->p = p;
   this->str = str;
 }
 
