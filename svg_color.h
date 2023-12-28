@@ -36,6 +36,10 @@ public:
 
   void Set( Color* color );
 
+  // Factor must be in the range [0.0; 1.0].
+  void Lighten( float f );
+  void Darken( float f );
+
   void Clear( void );
 
   bool IsDefined();

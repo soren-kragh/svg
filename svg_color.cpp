@@ -62,13 +62,9 @@ Color::Color( Color* color )
 void Color::Set( ColorName color, float lighten, float darken )
 {
   RGB rgb = color_table[ color ];
-  rgb.r += (0xFF - rgb.r) * lighten;
-  rgb.g += (0xFF - rgb.g) * lighten;
-  rgb.b += (0xFF - rgb.b) * lighten;
-  rgb.r *= 1 - darken;
-  rgb.g *= 1 - darken;
-  rgb.b *= 1 - darken;
   Set( rgb.r, rgb.g, rgb.b );
+  Lighten( lighten );
+  Darken( darken );
 }
 
 void Color::Set( uint8_t r, uint8_t g, uint8_t b )
@@ -83,6 +79,20 @@ void Color::Set( uint8_t r, uint8_t g, uint8_t b )
 void Color::Set( Color* color )
 {
   *this = *color;
+}
+
+void Color::Lighten( float f )
+{
+  r += (0xFF - r) * f;
+  g += (0xFF - g) * f;
+  b += (0xFF - b) * f;
+}
+
+void Color::Darken( float f )
+{
+  r *= 1 - f;
+  g *= 1 - f;
+  b *= 1 - f;
 }
 
 void Color::Clear( void )
