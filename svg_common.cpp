@@ -23,7 +23,7 @@ using namespace SVG;
 
 bool SVG::Collides( Object* obj1, Object* obj2, U margin_x, U margin_y )
 {
-  if ( obj1 == NULL || obj2 == NULL ) return false;
+  if ( obj1 == nullptr || obj2 == nullptr ) return false;
   if ( obj1->Empty() || obj2->Empty() ) return false;
   BoundaryBox b1 = obj1->GetBB();
   BoundaryBox b2 = obj2->GetBB();

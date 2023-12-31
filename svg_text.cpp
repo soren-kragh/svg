@@ -60,7 +60,7 @@ BoundaryBox Text::GetMyBB( void )
 {
   BoundaryBox bb;
 
-  Attributes final_attr = Attributes( NULL );
+  Attributes final_attr = Attributes( nullptr );
   CollectAttr( final_attr );
 
   U w = final_attr.TextFont()->GetWidth( str );
@@ -109,7 +109,7 @@ void Text::GenSVG(
   U w;          // Width of one character.
   U h;          // Height of one character.
   { // Emulate text-anchor by adjusting the x- y-coordinates.
-    Attributes final_attr = Attributes( NULL );
+    Attributes final_attr = Attributes( nullptr );
     CollectAttr( final_attr );
     h = final_attr.TextFont()->GetHeight();
     w = final_attr.TextFont()->GetWidth();

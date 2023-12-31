@@ -23,14 +23,14 @@ using namespace SVG;
 
 Object::Object( void )
 {
-  parrent_group = NULL;
+  parrent_group = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 Group* Object::ParrentGroup( void )
 {
-  if ( parrent_group == NULL ) {
+  if ( parrent_group == nullptr ) {
     SVG_FATAL( "SVG::Object::ParrentGroup: object has no parrent" );
   }
   return parrent_group;

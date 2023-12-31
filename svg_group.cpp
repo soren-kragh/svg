@@ -22,7 +22,7 @@ using namespace SVG;
 
 Group::Group( void )
 {
-  last = NULL;
+  last = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ Group::~Group( void )
 
 Object* Group::Add( Object* object )
 {
-  if ( object->parrent_group != NULL ) {
+  if ( object->parrent_group != nullptr ) {
     SVG_FATAL( "SVG::Group::Add: object cannot be added to a group more than once" );
   }
   object->parrent_group = this;
@@ -52,7 +52,7 @@ void Group::DeleteFront( void )
   if ( objects.size() > 0 ) {
     Object* obj = objects.back();
     objects.pop_back();
-    if ( last == obj ) last = NULL;
+    if ( last == obj ) last = nullptr;
     delete obj;
   }
 }
@@ -62,7 +62,7 @@ void Group::DeleteBack( void )
   if ( objects.size() > 0 ) {
     Object* obj = objects.front();
     objects.pop_front();
-    if ( last == obj ) last = NULL;
+    if ( last == obj ) last = nullptr;
     delete obj;
   }
 }

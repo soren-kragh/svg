@@ -143,7 +143,7 @@ void Attributes::Collect( Attributes& final_attr )
     final_attr.text_color.Set( &text_color );
   }
 
-  if ( object->parrent_group != NULL ) {
+  if ( object->parrent_group != nullptr ) {
     object->parrent_group->Attr()->Collect( final_attr );
   }
 }
@@ -153,7 +153,7 @@ void Attributes::Collect( Attributes& final_attr )
 std::string Attributes::SVG( bool text )
 {
   std::ostringstream oss;
-  Attributes final_attr = Attributes( NULL );
+  Attributes final_attr = Attributes( nullptr );
 
   Collect( final_attr );
 
