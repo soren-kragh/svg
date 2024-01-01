@@ -48,27 +48,31 @@ Font::Font( const std::string family, U size )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Font::Set( const Font& font )
+Font* Font::Set( const Font& font )
 {
   *this = font;
+  return this;
 }
 
-void Font::SetFamily( const std::string family )
+Font* Font::SetFamily( const std::string family )
 {
   this->family = family;
   family_defined = true;
+  return this;
 }
 
-void Font::SetSize( U size )
+Font* Font::SetSize( U size )
 {
   this->size = size;
   size_defined = true;
+  return this;
 }
 
-void Font::SetBold( bool bold )
+Font* Font::SetBold( bool bold )
 {
   weight_bold = bold;
   weight_defined = true;
+  return this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

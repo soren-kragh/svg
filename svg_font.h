@@ -32,10 +32,10 @@ public:
   Font( const std::string family );
   Font( const std::string family, U size );
 
-  void Set( const Font& font );
-  void SetFamily( const std::string family );
-  void SetSize( U size );
-  void SetBold( bool bold = true );
+  Font* Set( const Font& font );
+  Font* SetFamily( const std::string family );
+  Font* SetSize( U size );
+  Font* SetBold( bool bold = true );
 
   U GetWidth( const std::string str );
   U GetWidth( U length = 1 );
