@@ -34,6 +34,7 @@ class Attributes
 public:
 
   Attributes( Object* object );
+  Attributes() : Attributes( nullptr ) {}
 
   Attributes* SetLineWidth( U width );
   Attributes* SetLineSolid();
@@ -53,13 +54,13 @@ public:
   Color* TextOutlineColor( void ) { return &text_outline_color; }
   Color* TextColor( void ) { return &text_color; }
 
-private:
-
   // Collect the final attributes used for the object. It will trace upwards in
   // the group hierarchy to get the various attributes as needed. Some
   // attributes may fail to be collected, which can happen if Attr() is used on
   // detached objects or objects part of detached group hierarchies.
   void Collect( Attributes& final_attr );
+
+private:
 
   std::string SVG( bool text = false );
 
