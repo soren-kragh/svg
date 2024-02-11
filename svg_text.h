@@ -23,8 +23,9 @@ class Text : public Object
 
 public:
 
-  Text( U x, U y, std::string str );
-  Text( Point p, std::string str );
+  Text( U x, U y, const std::string& str );
+  Text( const std::string& str ) : Text( 0, 0, str ) {}
+  Text( Point p, const std::string& str ) : Text( p.x, p.y, str ) {}
 
 private:
 
