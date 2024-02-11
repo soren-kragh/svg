@@ -11,23 +11,23 @@ void grid( Group* g )
   int grid_n = 10;
   int grid_d = 50;
   g->Attr()->SetLineWidth( 0.5 )->SetLineDash( 3 );
-  g->Attr()->LineColor()->Set( Black, 0.85 );
+  g->Attr()->LineColor()->Set( ColorName::Black, 0.85 );
   for ( int x = -grid_n * grid_d; x <= grid_n * grid_d; x += grid_d ) {
     g->Add( new Line( x, -grid_n * grid_d, x, grid_n * grid_d ) );
     if ( x == 0 ) {
-      g->Last()->Attr()->LineColor()->Set( Blue, 0.4 );
+      g->Last()->Attr()->LineColor()->Set( ColorName::Blue, 0.4 );
     } else
     if ( x / grid_d % 2 == 0 ) {
-      g->Last()->Attr()->LineColor()->Set( Black, 0.75 );
+      g->Last()->Attr()->LineColor()->Set( ColorName::Black, 0.75 );
     }
   }
   for ( int y = -grid_n * grid_d; y <= grid_n * grid_d; y += grid_d ) {
     g->Add( new Line( -grid_n * grid_d, y, grid_n * grid_d, y ) );
     if ( y == 0 ) {
-      g->Last()->Attr()->LineColor()->Set( Blue, 0.4 );
+      g->Last()->Attr()->LineColor()->Set( ColorName::Blue, 0.4 );
     } else
     if ( y / grid_d % 2 == 0 ) {
-      g->Last()->Attr()->LineColor()->Set( Black, 0.75 );
+      g->Last()->Attr()->LineColor()->Set( ColorName::Black, 0.75 );
     }
   }
 }
@@ -45,10 +45,10 @@ void test01( Group* g )
 
   g->Attr()->TextFont()->Set( font );
   g->Attr()->FillColor()->Clear();
-  g->Attr()->SetLineWidth( 5 )->LineColor()->Set( Black );
-  g->Attr()->TextColor()->Set( Red );
-  g->Attr()->SetTextOutlineWidth( 2 )->TextOutlineColor()->Set( Red, 0, 0.5 );
-  g->Attr()->SetTextAnchorY( MinY );
+  g->Attr()->SetLineWidth( 5 )->LineColor()->Set( ColorName::Black );
+  g->Attr()->TextColor()->Set( ColorName::Red );
+  g->Attr()->SetTextOutlineWidth( 2 )->TextOutlineColor()->Set( ColorName::Red, 0, 0.5 );
+  g->Attr()->SetTextAnchorY( AnchorY::Min );
 
   U x = 0;
   U y = 0;
@@ -60,18 +60,18 @@ void test01( Group* g )
     g->Last()->Attr()->SetTextAnchor( anchor_x, anchor_y );
     g->Add( new Rect( x, y, x + w, y + h ) );
     g->Add( new Circle( x + dx, y + dy, 5 ) );
-    g->Last()->Attr()->SetLineWidth( 1 )->FillColor()->Set( Yellow );
+    g->Last()->Attr()->SetLineWidth( 1 )->FillColor()->Set( ColorName::Yellow );
   };
 
-  test( MinX, MinY, 0  , 0   ); y += h + m;
-  test( MidX, MinY, w/2, 0   ); y += h + m;
-  test( MaxX, MinY, w  , 0   ); y -= 2 * (h + m); x += w + m;
-  test( MinX, MidY, 0  , h/2 ); y += h + m;
-  test( MidX, MidY, w/2, h/2 ); y += h + m;
-  test( MaxX, MidY, w  , h/2 ); y -= 2 * (h + m); x += w + m;
-  test( MinX, MaxY, 0  , h   ); y += h + m;
-  test( MidX, MaxY, w/2, h   ); y += h + m;
-  test( MaxX, MaxY, w  , h   ); y -= 2 * (h + m); x += w + m;
+  test( AnchorX::Min, AnchorY::Min, 0  , 0   ); y += h + m;
+  test( AnchorX::Mid, AnchorY::Min, w/2, 0   ); y += h + m;
+  test( AnchorX::Max, AnchorY::Min, w  , 0   ); y -= 2 * (h + m); x += w + m;
+  test( AnchorX::Min, AnchorY::Mid, 0  , h/2 ); y += h + m;
+  test( AnchorX::Mid, AnchorY::Mid, w/2, h/2 ); y += h + m;
+  test( AnchorX::Max, AnchorY::Mid, w  , h/2 ); y -= 2 * (h + m); x += w + m;
+  test( AnchorX::Min, AnchorY::Max, 0  , h   ); y += h + m;
+  test( AnchorX::Mid, AnchorY::Max, w/2, h   ); y += h + m;
+  test( AnchorX::Max, AnchorY::Max, w  , h   ); y -= 2 * (h + m); x += w + m;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,15 +89,15 @@ void test02( Group* g )
     g = g->AddNewGroup()->AddNewGroup();
 
     g->Add( new Rect( 50, 100, 250, 200 ) );
-    g->Last()->Attr()->LineColor()->Set( Black, 0.7 );
+    g->Last()->Attr()->LineColor()->Set( ColorName::Black, 0.7 );
     g->Add( new Rect( 50, 100, 250, 200 ) );
-    g->Last()->Rotate( 45, MidX, MaxY );
+    g->Last()->Rotate( 45, AnchorX::Mid, AnchorY::Max );
     g->Last()->Move( 300, -200 );
     bb = g->Last()->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y, 50 ) );
     g->Last()->Attr()->SetLineWidth( 0.25 );
 
-    g->Rotate( 40, MinX, MaxY );
+    g->Rotate( 40, AnchorX::Min, AnchorY::Max );
     g->Move( -50, -200 );
 
     bb = g->GetBB();
@@ -105,9 +105,9 @@ void test02( Group* g )
     g = g->ParrentGroup();
 
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
-    g->Last()->Attr()->LineColor()->Set( Yellow );
+    g->Last()->Attr()->LineColor()->Set( ColorName::Yellow );
 
-    g->MoveTo( MinX, MinY, 0, 0 );
+    g->MoveTo( AnchorX::Min, AnchorY::Min, 0, 0 );
 
     g = g->ParrentGroup();
   }
@@ -117,31 +117,31 @@ void test02( Group* g )
 
     g->Attr()->TextFont()->SetSize( 100 );
     g->Attr()->TextFont()->SetBold();
-    g->Attr()->SetTextAnchorX( MaxX );
-    g->Attr()->SetTextAnchorY( MinY );
+    g->Attr()->SetTextAnchorX( AnchorX::Max );
+    g->Attr()->SetTextAnchorY( AnchorY::Min );
 
     g->Add( new Text( 0, -300, "He|!X" ) );
-    g->Last()->Attr()->TextColor()->Set( Black, 0.7 );
+    g->Last()->Attr()->TextColor()->Set( ColorName::Black, 0.7 );
     bb = g->Last()->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
 
     g->Add( new Text( 0, -300, "He|!X" ) );
-    g->Last()->Rotate( 20, MaxX, MaxY );
+    g->Last()->Rotate( 20, AnchorX::Max, AnchorY::Max );
 
     bb = g->Last()->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
-    g->Last()->Attr()->LineColor()->Set( Yellow );
+    g->Last()->Attr()->LineColor()->Set( ColorName::Yellow );
 
-    g->MoveTo( MaxX, MinY, -100, -200 );
-    g->Rotate( -30, MaxX, MinY );
+    g->MoveTo( AnchorX::Max, AnchorY::Min, -100, -200 );
+    g->Rotate( -30, AnchorX::Max, AnchorY::Min );
 
     g = g->ParrentGroup();
 
     bb = g->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
-    g->Last()->Attr()->LineColor()->Set( Pink );
+    g->Last()->Attr()->LineColor()->Set( ColorName::Pink );
 
-    g->MoveTo( MinX, MaxY, 100, -100 );
+    g->MoveTo( AnchorX::Min, AnchorY::Max, 100, -100 );
 
     g = g->ParrentGroup();
   }
@@ -158,7 +158,7 @@ void test03( Group* g )
       int d = 800 / r;
       g->Add( new Rect( x*d, y*d, x*d+d, y*d+d ) );
       g->Last()->Attr()->FillColor()->Set(
-        Blue, x / (r - 1.0), y / (r - 1.0)
+        ColorName::Blue, x / (r - 1.0), y / (r - 1.0)
       );
     }
   }
@@ -189,7 +189,7 @@ void test04( Group* g )
 */
 
   g->Add( new Circle( 400, -300, 600 ) );
-  g->Last()->Rotate( 45, MinX, MaxY );
+  g->Last()->Rotate( 45, AnchorX::Min, AnchorY::Max );
 
 //  g->Add( new Rect( 400 - 600, -300 - 600, 400 + 600, -300 + 600 ) );
 //  g->Last()->Rotate( 45, Start, End );
@@ -203,24 +203,24 @@ void test04( Group* g )
   g->Add( new Poly( { 100, 100, 300, 200, 200, 400, 200, -200 } ) );
   dynamic_cast< Poly* >( g->Last() )->Add( -300, 100 );
   dynamic_cast< Poly* >( g->Last() )->Close();
-  g->Last()->Attr()->FillColor()->Set( Yellow );
+  g->Last()->Attr()->FillColor()->Set( ColorName::Yellow );
   g->Last()->Attr()->SetLineWidth( 8 );
-  g->Last()->Rotate( -20, MinX, MidY );
+  g->Last()->Rotate( -20, AnchorX::Min, AnchorY::Mid );
   BoundaryBox bb = g->Last()->GetBB();
   g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
   g->Last()->Attr()->SetLineDash( 10 );
 
   g->Add( new Text( 0, -150, "100.10" ) );
-  g->Last()->Attr()->SetTextAnchorX( MidX );
-  g->Last()->Attr()->SetTextAnchorY( MidY );
+  g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
+  g->Last()->Attr()->SetTextAnchorY( AnchorY::Mid );
   g->Last()->Attr()->TextFont()->SetBold();
   g->Last()->Attr()->TextFont()->SetSize( 16 );
 
   g->Add( new Circle( 400, -300, 600 ) );
   g->Add( new Rect( 400 - 300, -300 - 300, 400 + 300, -300 + 300 ) );
-  g->Last()->Attr()->FillColor()->Set( Black, 0.9 );
+  g->Last()->Attr()->FillColor()->Set( ColorName::Black, 0.9 );
   g->Last()->Attr()->SetLineDash( 10 );
-  g->Last()->Rotate( 45, MinX, MaxY );
+  g->Last()->Rotate( 45, AnchorX::Min, AnchorY::Max );
 
   g = g->ParrentGroup();
 
@@ -245,15 +245,15 @@ void test05( Group* g )
 
     rect = new Rect( -200, -300, 100, 200, 100 );
     g->Add( rect );
-    g->Last()->Rotate( 20, MinX, MinY );
+    g->Last()->Rotate( 20, AnchorX::Min, AnchorY::Min );
     BoundaryBox bb = g->Last()->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y, 50 ) );
     g = g->ParrentGroup();
   }
-  g->Last()->Rotate( -20, MinX, MinY );
+  g->Last()->Rotate( -20, AnchorX::Min, AnchorY::Min );
   BoundaryBox bb = g->Last()->GetBB();
   g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
-  g->Last()->Attr()->LineColor()->Set( Blue );
+  g->Last()->Attr()->LineColor()->Set( ColorName::Blue );
 
 // g->Last()->Rotate( 15, -100, 200 );
 // g->Last()->Move( 100, -200 );
@@ -274,7 +274,7 @@ void test06( Group* g )
     g->Attr()->TextFont()->SetSize( 16 );
 
     g->Add( new Ellipse( x, y, rx, ry ) );
-    g->Last()->Attr()->SetLineWidth( 4 )->LineColor()->Set( Blue, 0.5 );
+    g->Last()->Attr()->SetLineWidth( 4 )->LineColor()->Set( ColorName::Blue, 0.5 );
     g->Last()->Rotate( theta );
 
     int d = 15;
@@ -282,27 +282,27 @@ void test06( Group* g )
 
     g->Add( new Line( bb.max.x + d, bb.min.y,  bb.min.x - d, bb.min.y ) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x + d + 6, bb.min.y, "MinY" ) );
-    g->Last()->Attr()->SetTextAnchorX( MinX );
-    g->Last()->Attr()->SetTextAnchorY( MidY );
+    g->Add( new Text( bb.max.x + d + 6, bb.min.y, "AnchorY::Min" ) );
+    g->Last()->Attr()->SetTextAnchorX( AnchorX::Min );
+    g->Last()->Attr()->SetTextAnchorY( AnchorY::Mid );
 
     g->Add( new Line( bb.max.x + d, bb.max.y,  bb.min.x - d, bb.max.y ) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x + d + 6, bb.max.y, "MaxY" ) );
-    g->Last()->Attr()->SetTextAnchorX( MinX );
-    g->Last()->Attr()->SetTextAnchorY( MidY );
+    g->Add( new Text( bb.max.x + d + 6, bb.max.y, "AnchorY::Max" ) );
+    g->Last()->Attr()->SetTextAnchorX( AnchorX::Min );
+    g->Last()->Attr()->SetTextAnchorY( AnchorY::Mid );
 
     g->Add( new Line( bb.min.x, bb.min.y - d,  bb.min.x, bb.max.y + d) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.min.x, bb.min.y - d, "MinX" ) );
-    g->Last()->Attr()->SetTextAnchorX( MidX );
-    g->Last()->Attr()->SetTextAnchorY( MaxY );
+    g->Add( new Text( bb.min.x, bb.min.y - d, "AnchorX::Min" ) );
+    g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
+    g->Last()->Attr()->SetTextAnchorY( AnchorY::Max );
 
     g->Add( new Line( bb.max.x, bb.min.y - d,  bb.max.x, bb.max.y + d) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x, bb.min.y - d, "MaxX" ) );
-    g->Last()->Attr()->SetTextAnchorX( MidX );
-    g->Last()->Attr()->SetTextAnchorY( MaxY );
+    g->Add( new Text( bb.max.x, bb.min.y - d, "AnchorX::Max" ) );
+    g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
+    g->Last()->Attr()->SetTextAnchorY( AnchorY::Max );
 
     g = g->ParrentGroup();
   };
@@ -321,7 +321,7 @@ int main()
 
   test06( svg_canvas->TopGroup()->AddNewGroup() );
 
-  svg_canvas->Background()->Set( Orange, 0.95, 0.0 );
+  svg_canvas->Background()->Set( ColorName::Orange, 0.95, 0.0 );
 
   std::cout << svg_canvas->GenSVG( 25 );
 

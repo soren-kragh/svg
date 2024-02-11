@@ -35,13 +35,13 @@ namespace SVG {
   class U;
   class Object;
 
-  typedef enum { MinX, MidX, MaxX } AnchorX;
-  typedef enum { MinY, MidY, MaxY } AnchorY;
+  enum class AnchorX { Min, Mid, Max };
+  enum class AnchorY { Min, Mid, Max };
 
-  typedef enum {
+  enum class ColorName {
     Black, Red, Green, Blue, Yellow, Magenta, Cyan, White,
     Brown, Orange, Purple, Pink
-  } ColorName;
+  };
 
   // Collision is determined by object boundary box alone, so it tends to be
   // quite conservative.

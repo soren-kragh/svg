@@ -27,9 +27,9 @@ Attributes::Attributes( Object* object )
   line_dash = 0;
   line_hole = 0;
   text_anchor_x_defined = false;
-  text_anchor_x = MinX;
+  text_anchor_x = AnchorX::Min;
   text_anchor_y_defined = false;
-  text_anchor_y = MinY;
+  text_anchor_y = AnchorY::Min;
   text_outline_width_defined = false;
   text_outline_width = 0;
 }

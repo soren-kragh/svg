@@ -30,8 +30,8 @@ public:
     translate_dy = 0;
     rotate_theta = 0;
     rotate_anchor_defined = false;
-    rotate_anchor_x = MidX;
-    rotate_anchor_y = MidY;
+    rotate_anchor_x = AnchorX::Mid;
+    rotate_anchor_y = AnchorY::Mid;
     rotate_point = Point( 0, 0 );
   }
 
@@ -41,13 +41,13 @@ public:
       SVG_FATAL( "SVG::Transform::SetRotatePoint: undefined anchor" );
     }
     switch ( rotate_anchor_x ) {
-      case MinX : rotate_point.x = bb.min.x; break;
-      case MaxX : rotate_point.x = bb.max.x; break;
+      case AnchorX::Min : rotate_point.x = bb.min.x; break;
+      case AnchorX::Max : rotate_point.x = bb.max.x; break;
       default   : rotate_point.x = (bb.min.x + bb.max.x) / 2;
     }
     switch ( rotate_anchor_y ) {
-      case MinY : rotate_point.y = bb.min.y; break;
-      case MaxY : rotate_point.y = bb.max.y; break;
+      case AnchorY::Min : rotate_point.y = bb.min.y; break;
+      case AnchorY::Max : rotate_point.y = bb.max.y; break;
       default   : rotate_point.y = (bb.min.y + bb.max.y) / 2;
     }
   }

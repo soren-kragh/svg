@@ -53,8 +53,8 @@ public:
 
   void Rotate(
     int theta,
-    AnchorX anchor_x = MidX,
-    AnchorY anchor_y = MidY
+    AnchorX anchor_x = AnchorX::Mid,
+    AnchorY anchor_y = AnchorY::Mid
   ) {
     transform.rotate_theta          = (theta % 360 + 360) % 360;
     transform.rotate_anchor_defined = true;

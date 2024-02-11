@@ -58,10 +58,10 @@ BoundaryBox Text::GetMyBB( void )
   U h = final_attr.TextFont()->GetHeight();
   U x1 = p.x;
   U y1 = p.y;
-  if ( final_attr.text_anchor_x == MidX ) x1 -= w / 2;
-  if ( final_attr.text_anchor_x == MaxX ) x1 -= w;
-  if ( final_attr.text_anchor_y == MidY ) y1 -= h / 2;
-  if ( final_attr.text_anchor_y == MaxY ) y1 -= h;
+  if ( final_attr.text_anchor_x == AnchorX::Mid ) x1 -= w / 2;
+  if ( final_attr.text_anchor_x == AnchorX::Max ) x1 -= w;
+  if ( final_attr.text_anchor_y == AnchorY::Mid ) y1 -= h / 2;
+  if ( final_attr.text_anchor_y == AnchorY::Max ) y1 -= h;
   U x2 = x1 + w;
   U y2 = y1 + h;
   bb.Update( x1, y1 );
@@ -104,11 +104,11 @@ void Text::GenSVG(
     CollectAttr( final_attr );
     h = final_attr.TextFont()->GetHeight();
     w = final_attr.TextFont()->GetWidth();
-    if ( final_attr.text_anchor_x == MinX ) x += w / 2;
-    if ( final_attr.text_anchor_x == MidX ) x -= w * (str.length() - 1.0) / 2;
-    if ( final_attr.text_anchor_x == MaxX ) x -= w * (str.length() - 0.5);
-    if ( final_attr.text_anchor_y == MidY ) y -= h / 2;
-    if ( final_attr.text_anchor_y == MaxY ) y -= h;
+    if ( final_attr.text_anchor_x == AnchorX::Min ) x += w / 2;
+    if ( final_attr.text_anchor_x == AnchorX::Mid ) x -= w * (str.length() - 1.0) / 2;
+    if ( final_attr.text_anchor_x == AnchorX::Max ) x -= w * (str.length() - 0.5);
+    if ( final_attr.text_anchor_y == AnchorY::Mid ) y -= h / 2;
+    if ( final_attr.text_anchor_y == AnchorY::Max ) y -= h;
     y += final_attr.TextFont()->GetBaseline();
   }
   oss

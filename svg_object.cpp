@@ -76,13 +76,13 @@ void Object::MoveTo(
   BoundaryBox bb = GetBB();
   Point p;
   switch ( anchor_x ) {
-    case MinX : p.x = bb.min.x; break;
-    case MaxX : p.x = bb.max.x; break;
+    case AnchorX::Min : p.x = bb.min.x; break;
+    case AnchorX::Max : p.x = bb.max.x; break;
     default   : p.x = (bb.min.x + bb.max.x) / 2;
   }
   switch ( anchor_y ) {
-    case MinY : p.y = bb.min.y; break;
-    case MaxY : p.y = bb.max.y; break;
+    case AnchorY::Min : p.y = bb.min.y; break;
+    case AnchorY::Max : p.y = bb.max.y; break;
     default   : p.y = (bb.min.y + bb.max.y) / 2;
   }
   transform.translate_dx += x - p.x;

@@ -23,16 +23,16 @@ Canvas::Canvas( void )
   top_group = new Group();
   top_group->Attr()->SetLineWidth( 1 );
   top_group->Attr()->SetLineSolid();
-  top_group->Attr()->LineColor()->Set( Black );
+  top_group->Attr()->LineColor()->Set( ColorName::Black );
   top_group->Attr()->FillColor()->Clear();
   top_group->Attr()->TextFont()->SetFamily( "Courier New" );
   top_group->Attr()->TextFont()->SetSize( 12 );
   top_group->Attr()->TextFont()->SetBold( false );
-  top_group->Attr()->SetTextAnchorX( MinX );
-  top_group->Attr()->SetTextAnchorY( MinY );
+  top_group->Attr()->SetTextAnchorX( AnchorX::Min );
+  top_group->Attr()->SetTextAnchorY( AnchorY::Min );
   top_group->Attr()->SetTextOutlineWidth( 0 );
   top_group->Attr()->TextOutlineColor()->Clear();
-  top_group->Attr()->TextColor()->Set( Black );
+  top_group->Attr()->TextColor()->Set( ColorName::Black );
 }
 
 Canvas::~Canvas( void )
