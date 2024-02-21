@@ -36,6 +36,12 @@ void BoundaryBox::Update( U x, U y )
   }
 }
 
+void BoundaryBox::Update( const BoundaryBox& bb )
+{
+  Update( bb.min );
+  Update( bb.max );
+}
+
 void BoundaryBox::Reset( void )
 {
   defined = false;

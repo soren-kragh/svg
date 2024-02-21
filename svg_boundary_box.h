@@ -30,6 +30,7 @@ public:
   {
     Update( p.x, p.y );
   }
+  void Update( const BoundaryBox& bb );
 
   void Reset( void );
 
