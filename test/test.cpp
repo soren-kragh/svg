@@ -282,25 +282,25 @@ void test06( Group* g )
 
     g->Add( new Line( bb.max.x + d, bb.min.y,  bb.min.x - d, bb.min.y ) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x + d + 6, bb.min.y, "AnchorY::Min" ) );
+    g->Add( new Text( bb.max.x + d + 6, bb.min.y, "Min" ) );
     g->Last()->Attr()->SetTextAnchorX( AnchorX::Min );
     g->Last()->Attr()->SetTextAnchorY( AnchorY::Mid );
 
     g->Add( new Line( bb.max.x + d, bb.max.y,  bb.min.x - d, bb.max.y ) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x + d + 6, bb.max.y, "AnchorY::Max" ) );
+    g->Add( new Text( bb.max.x + d + 6, bb.max.y, "Max" ) );
     g->Last()->Attr()->SetTextAnchorX( AnchorX::Min );
     g->Last()->Attr()->SetTextAnchorY( AnchorY::Mid );
 
     g->Add( new Line( bb.min.x, bb.min.y - d,  bb.min.x, bb.max.y + d) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.min.x, bb.min.y - d, "AnchorX::Min" ) );
+    g->Add( new Text( bb.min.x, bb.min.y - d, "Min" ) );
     g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
     g->Last()->Attr()->SetTextAnchorY( AnchorY::Max );
 
     g->Add( new Line( bb.max.x, bb.min.y - d,  bb.max.x, bb.max.y + d) );
     g->Last()->Attr()->SetLineWidth( 0.5 )->SetLineDash( 5 );
-    g->Add( new Text( bb.max.x, bb.min.y - d, "AnchorX::Max" ) );
+    g->Add( new Text( bb.max.x, bb.min.y - d, "Max" ) );
     g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
     g->Last()->Attr()->SetTextAnchorY( AnchorY::Max );
 
@@ -311,6 +311,16 @@ void test06( Group* g )
   test( -250, +250, 200,  50, -100 );
   test( -250, -250, 250,  20,  155 );
   test( +250, -250, 130, 200,  -15 );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void test07( Group* g )
+{
+  g->Add( new Poly( { 0, 0, 500, 200, 700, -100 } ) );
+  g->Attr()->SetLineWidth( 40 );
+  g->Attr()->SetLineCap( LineCap::Square );
+  g->Attr()->SetLineJoin( LineJoin::Round );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

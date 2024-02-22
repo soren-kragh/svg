@@ -43,6 +43,9 @@ namespace SVG {
     Brown, Orange, Purple, Pink
   };
 
+  enum class LineCap { Butt, Round, Square };
+  enum class LineJoin { Sharp, Round };
+
   // Collision is determined by object boundary box alone, so it tends to be
   // quite conservative.
   bool Collides( Object* obj1, Object* obj2 );

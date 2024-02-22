@@ -23,6 +23,8 @@ Canvas::Canvas( void )
   top_group = new Group();
   top_group->Attr()->SetLineWidth( 1 );
   top_group->Attr()->SetLineSolid();
+  top_group->Attr()->SetLineCap( LineCap::Butt );
+  top_group->Attr()->SetLineJoin( LineJoin::Sharp );
   top_group->Attr()->LineColor()->Set( ColorName::Black );
   top_group->Attr()->FillColor()->Clear();
   top_group->Attr()->TextFont()->SetFamily( "Courier New" );
@@ -72,7 +74,6 @@ std::string Canvas::GenSVG( U margin )
     << " xmlns=\"http://www.w3.org/2000/svg\""
     << " width=" << canvas_w.SVG()
     << " height=" << canvas_h.SVG()
-    << " stroke-linecap=\"round\""
     << '>' << "\n";
 
   indent.resize( indent.size() + 2, ' ' );

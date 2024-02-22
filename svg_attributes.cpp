@@ -26,6 +26,10 @@ Attributes::Attributes( Object* object )
   line_dash_defined = false;
   line_dash = 0;
   line_hole = 0;
+  line_cap_defined = false;
+  line_cap = LineCap::Butt;
+  line_join_defined = false;
+  line_join = LineJoin::Sharp;
   text_anchor_x_defined = false;
   text_anchor_x = AnchorX::Min;
   text_anchor_y_defined = false;
@@ -64,6 +68,20 @@ Attributes* Attributes::SetLineDash( U dash, U hole )
   line_dash_defined = true;
   line_dash = dash;
   line_hole = hole;
+  return this;
+}
+
+Attributes* Attributes::SetLineCap( LineCap cap )
+{
+  line_cap_defined = true;
+  line_cap = cap;
+  return this;
+}
+
+Attributes* Attributes::SetLineJoin( LineJoin join )
+{
+  line_join_defined = true;
+  line_join = join;
   return this;
 }
 
@@ -106,6 +124,12 @@ void Attributes::Collect( Attributes& final_attr )
   }
   if ( !final_attr.line_dash_defined && line_dash_defined ) {
     final_attr.SetLineDash( line_dash, line_hole );
+  }
+  if ( !final_attr.line_cap_defined && line_cap_defined ) {
+    final_attr.SetLineCap( line_cap );
+  }
+  if ( !final_attr.line_join_defined && line_join_defined ) {
+    final_attr.SetLineJoin( line_join );
   }
   if ( !final_attr.line_color.IsDefined() && line_color.IsDefined() ) {
     final_attr.line_color.Set( &line_color );
@@ -184,6 +208,23 @@ std::string Attributes::SVG( bool text )
         oss
           << " stroke-dasharray=\""
           << line_dash.SVG( false ) << ' ' << line_hole.SVG( false ) << '"';
+      }
+    }
+    if ( line_cap_defined ) {
+      oss << " stroke-linecap=\"";
+      switch ( line_cap ) {
+        case LineCap::Butt   : oss << "butt\""; break;
+        case LineCap::Round  : oss << "round\""; break;
+        case LineCap::Square : oss << "square\""; break;
+        default              : oss << "\"";
+      }
+    }
+    if ( line_join_defined ) {
+      oss << " stroke-linejoin=\"";
+      switch ( line_join ) {
+        case LineJoin::Sharp : oss << "miter\""; break;
+        case LineJoin::Round : oss << "round\""; break;
+        default              : oss << "\"";
       }
     }
     if ( line_color.IsDefined() ) {

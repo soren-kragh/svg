@@ -40,6 +40,8 @@ public:
   Attributes* SetLineSolid();
   Attributes* SetLineDash( U dash );
   Attributes* SetLineDash( U dash, U hole );
+  Attributes* SetLineCap( LineCap cap );
+  Attributes* SetLineJoin( LineJoin join );
   Color* LineColor( void ) { return &line_color; }
 
   Color* FillColor( void ) { return &fill_color; }
@@ -66,12 +68,16 @@ private:
 
   Object* object;
 
-  bool  line_width_defined;
-  U     line_width;
-  bool  line_dash_defined;
-  U     line_dash;
-  U     line_hole;
-  Color line_color;
+  bool     line_width_defined;
+  U        line_width;
+  bool     line_dash_defined;
+  U        line_dash;
+  U        line_hole;
+  bool     line_cap_defined;
+  LineCap  line_cap;
+  bool     line_join_defined;
+  LineJoin line_join;
+  Color    line_color;
 
   Color fill_color;
 
