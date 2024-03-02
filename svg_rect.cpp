@@ -30,13 +30,6 @@ Rect::Rect(
   this->corner_r = corner_r;
 }
 
-Rect::Rect( Point p1, Point p2, U corner_r )
-{
-  if ( p1.x > p2.x ) std::swap( p1.x, p2.x );
-  if ( p1.y > p2.y ) std::swap( p1.y, p2.y );
-  this->corner_r = corner_r;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void Rect::UpdateBB(

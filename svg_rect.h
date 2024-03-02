@@ -28,7 +28,8 @@ public:
     U x2, U y2,
     U corner_r = 0
   );
-  Rect( Point p1, Point p2, U corner_r = 0 );
+  Rect( Point p1, Point p2, U corner_r = 0 ) :
+    Rect( p1.x, p1.y, p2.x, p2.y, corner_r ) {}
 
 private:
 
