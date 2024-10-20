@@ -42,13 +42,14 @@ static std::map< ColorName, RGB > color_table = {
 
 Color::Color( void )
 {
-  Set( 0, 0, 0 );
-  defined = false;
+  rgb_defined = false;
+  opacity_defined = false;
 }
 
 Color::Color( uint8_t r, uint8_t g, uint8_t b )
 {
   Set( r, g, b );
+  opacity_defined = false;
 }
 
 Color::Color( Color* color )
@@ -56,26 +57,39 @@ Color::Color( Color* color )
   Set( color );
 }
 
-void Color::Set( ColorName color, float lighten, float darken )
+//------------------------------------------------------------------------------
+
+Color* Color::Set( uint8_t r, uint8_t g, uint8_t b )
+{
+  this->r = r;
+  this->g = g;
+  this->b = b;
+  rgb_defined = true;
+  rgb_none = false;
+  return this;
+}
+
+Color* Color::Set( ColorName color, float lighten, float darken )
 {
   RGB rgb = color_table[ color ];
   Set( rgb.r, rgb.g, rgb.b );
   Lighten( lighten );
   Darken( darken );
+  return this;
 }
 
-void Color::Set( uint8_t r, uint8_t g, uint8_t b )
-{
-  this->r = r;
-  this->g = g;
-  this->b = b;
-  invisible = false;
-  defined = true;
-}
-
-void Color::Set( Color* color )
+Color* Color::Set( Color* color )
 {
   *this = *color;
+  return this;
+}
+
+void Color::SetOpacity( int opacity )
+{
+  if ( opacity < 0 ) opacity = 0;
+  if ( opacity > 100 ) opacity = 100;
+  this->opacity = opacity;
+  opacity_defined = true;
 }
 
 void Color::Lighten( float f )
@@ -94,37 +108,31 @@ void Color::Darken( float f )
 
 void Color::Clear( void )
 {
-  invisible = true;
-  defined = true;
+  rgb_defined = true;
+  rgb_none = true;
+  opacity_defined = false;
 }
 
-bool Color::IsDefined()
-{
-  return defined;
-}
-
-bool Color::IsClear()
-{
-  return invisible;
-}
-
-std::string Color::SVG( bool quoted )
+std::string Color::SVG( const std::string name )
 {
   std::ostringstream oss;
-  if ( quoted ) oss << "\"";
-  if ( defined ) {
-    if ( invisible ) {
-      oss << "none";
+  if ( rgb_defined ) {
+    oss << ' ' << name << '=';
+    if ( rgb_none ) {
+      oss << "\"none\"";
     } else {
       oss
-        << "#"
+        << "\"#"
         << std::hex << std::setfill( '0' ) << std::uppercase
         << std::setw( 2 ) << (0xFF & r)
         << std::setw( 2 ) << (0xFF & g)
-        << std::setw( 2 ) << (0xFF & b);
+        << std::setw( 2 ) << (0xFF & b)
+        << '"';
     }
   }
-  if ( quoted ) oss << "\"";
+  if ( opacity_defined && !(rgb_defined && rgb_none) ) {
+    oss << std::dec << ' ' << name << "-opacity=" << '"' << opacity << "%\"";
+  }
   return oss.str();
 }
 

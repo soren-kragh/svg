@@ -325,11 +325,31 @@ void test07( Group* g )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void test08( Group* g )
+{
+  g->Attr()->SetLineWidth( 20 );
+
+  g->Add( new Rect( 0, 0, 500, 200 ) );
+  g->Last()->Attr()->FillColor()->Set( ColorName::Blue );
+  g->Add( new Rect( 100, 100, 300, 400 ) );
+  g->Last()->Attr()->FillColor()->Set( ColorName::Yellow )->SetOpacity( 30 );
+  g->Last()->Attr()->LineColor()->SetOpacity( 60 );
+
+  g->Add( new Text( 100, 150, "Hello" ) );
+  g->Last()->Attr()->TextFont()->SetSize( 100 )->SetBold();
+
+  g->Attr()->TextColor()->SetOpacity( 50 );
+
+  g->Attr()->SetOpacity( 50 );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 int main()
 {
   Canvas* svg_canvas = new Canvas();
 
-  test06( svg_canvas->TopGroup()->AddNewGroup() );
+  test01( svg_canvas->TopGroup()->AddNewGroup() );
 
   svg_canvas->Background()->Set( ColorName::Orange, 0.95, 0.0 );
 

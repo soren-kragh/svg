@@ -78,7 +78,7 @@ std::string Canvas::GenSVG( U margin )
 
   indent.resize( indent.size() + 2, ' ' );
 
-  if ( !Background()->IsClear() ) {
+  if ( Background()->rgb_defined && !Background()->rgb_none ) {
     Rect* rect = new Rect( 0, 0, canvas_w, -canvas_h );
     rect->Attr()->FillColor()->Set( &background );
     rect->Attr()->LineColor()->Clear();

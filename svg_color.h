@@ -19,6 +19,8 @@ namespace SVG {
 
 class Color
 {
+  friend class Canvas;
+  friend class Attributes;
 
 public:
 
@@ -26,12 +28,20 @@ public:
   Color( uint8_t r, uint8_t g, uint8_t b );
   Color( Color* color );
 
-  void Set( uint8_t r, uint8_t g, uint8_t b );
+  Color* Set( uint8_t r, uint8_t g, uint8_t b );
 
   // lighten and darken must be in the range [0.0; 1.0].
-  void Set( ColorName color, float lighten = 0.0, float darken = 0.0 );
+  Color* Set( ColorName color, float lighten = 0.0, float darken = 0.0 );
 
-  void Set( Color* color );
+  Color* Set( Color* color );
+
+  // opacity/transparency is a percentage in the range [0; 100]; default is
+  // 100/0. Note that opacity/transparency is not supported in all viewers.
+  void SetOpacity( int opacity );
+  void SetTransparency( int transparency )
+  {
+    SetOpacity( 100 - transparency );
+  }
 
   // Factor must be in the range [0.0; 1.0].
   void Lighten( float f );
@@ -39,20 +49,18 @@ public:
 
   void Clear( void );
 
-  bool IsDefined();
-  bool IsClear();
-
-  std::string SVG( bool quoted = true );
-
 private:
 
-  bool defined;
+  std::string SVG( const std::string name );
 
+  bool    rgb_defined;
+  bool    rgb_none;
   uint8_t r;
   uint8_t g;
   uint8_t b;
 
-  bool invisible;
+  bool opacity_defined;
+  int  opacity;
 
 };
 

@@ -36,6 +36,14 @@ public:
   Attributes( Object* object );
   Attributes() : Attributes( nullptr ) {}
 
+  // opacity/transparency is a percentage in the range [0; 100]; default is
+  // 100/0. Note that opacity/transparency is not supported in all viewers.
+  Attributes* SetOpacity( int opacity );
+  Attributes* SetTransparency( int transparency )
+  {
+    return SetOpacity( 100 - transparency );
+  }
+
   Attributes* SetLineWidth( U width );
   Attributes* SetLineSolid();
   Attributes* SetLineDash( U dash );
@@ -67,6 +75,9 @@ private:
   std::string SVG( bool text = false );
 
   Object* object;
+
+  bool opacity_defined;
+  int  opacity;
 
   bool     line_width_defined;
   U        line_width;

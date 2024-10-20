@@ -21,6 +21,8 @@ using namespace SVG;
 Attributes::Attributes( Object* object )
 {
   this->object = object;
+  opacity_defined = false;
+  opacity = 100;
   line_width_defined = false;
   line_width = 0;
   line_dash_defined = false;
@@ -39,6 +41,15 @@ Attributes::Attributes( Object* object )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+Attributes* Attributes::SetOpacity( int opacity )
+{
+  if ( opacity < 0 ) opacity = 0;
+  if ( opacity > 100 ) opacity = 100;
+  this->opacity = opacity;
+  opacity_defined = true;
+  return this;
+}
 
 Attributes* Attributes::SetLineWidth( U width )
 {
@@ -131,12 +142,26 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.line_join_defined && line_join_defined ) {
     final_attr.SetLineJoin( line_join );
   }
-  if ( !final_attr.line_color.IsDefined() && line_color.IsDefined() ) {
-    final_attr.line_color.Set( &line_color );
+  if ( !final_attr.line_color.rgb_defined && line_color.rgb_defined ) {
+    if ( line_color.rgb_none ) {
+      final_attr.line_color.Clear();
+    } else {
+      final_attr.line_color.Set( line_color.r, line_color.g, line_color.b );
+    }
+  }
+  if ( !final_attr.line_color.opacity_defined && line_color.opacity_defined ) {
+    final_attr.line_color.SetOpacity( line_color.opacity );
   }
 
-  if ( !final_attr.fill_color.IsDefined() && fill_color.IsDefined() ) {
-    final_attr.fill_color.Set( &fill_color );
+  if ( !final_attr.fill_color.rgb_defined && fill_color.rgb_defined ) {
+    if ( fill_color.rgb_none ) {
+      final_attr.fill_color.Clear();
+    } else {
+      final_attr.fill_color.Set( fill_color.r, fill_color.g, fill_color.b );
+    }
+  }
+  if ( !final_attr.fill_color.opacity_defined && fill_color.opacity_defined ) {
+    final_attr.fill_color.SetOpacity( fill_color.opacity );
   }
 
   if ( !final_attr.text_font.family_defined && text_font.family_defined ) {
@@ -157,11 +182,27 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.text_outline_width_defined && text_outline_width_defined ) {
     final_attr.SetTextOutlineWidth( text_outline_width );
   }
-  if ( !final_attr.text_outline_color.IsDefined() && text_outline_color.IsDefined() ) {
-    final_attr.text_outline_color.Set( &text_outline_color );
+  if ( !final_attr.text_outline_color.rgb_defined && text_outline_color.rgb_defined ) {
+    if ( text_outline_color.rgb_none ) {
+      final_attr.text_outline_color.Clear();
+    } else {
+      final_attr.text_outline_color.Set(
+        text_outline_color.r, text_outline_color.g, text_outline_color.b
+      );
+    }
   }
-  if ( !final_attr.text_color.IsDefined() && text_color.IsDefined() ) {
-    final_attr.text_color.Set( &text_color );
+  if ( !final_attr.text_outline_color.opacity_defined && text_outline_color.opacity_defined ) {
+    final_attr.text_outline_color.SetOpacity( text_outline_color.opacity );
+  }
+  if ( !final_attr.text_color.rgb_defined && text_color.rgb_defined ) {
+    if ( text_color.rgb_none ) {
+      final_attr.text_color.Clear();
+    } else {
+      final_attr.text_color.Set( text_color.r, text_color.g, text_color.b );
+    }
+  }
+  if ( !final_attr.text_color.opacity_defined && text_color.opacity_defined ) {
+    final_attr.text_color.SetOpacity( text_color.opacity );
   }
 
   if ( object->parrent_group != nullptr ) {
@@ -174,29 +215,25 @@ void Attributes::Collect( Attributes& final_attr )
 std::string Attributes::SVG( bool text )
 {
   std::ostringstream oss;
-  Attributes final_attr = Attributes( nullptr );
-
-  Collect( final_attr );
 
   if ( text ) {
     // SVG does not have dedicated attributes for some text properties, so we
     // have to provide them for each text object.
+    Attributes final_attr = Attributes( nullptr );
+    Collect( final_attr );
     bool has_outline =
-      final_attr.text_outline_width_defined
-      && final_attr.text_outline_width > 0
-      && final_attr.text_outline_color.IsDefined();
+      final_attr.text_outline_width_defined &&
+      final_attr.text_outline_width > 0 &&
+      final_attr.text_outline_color.rgb_defined &&
+      !final_attr.text_outline_color.rgb_none;
     if ( has_outline ) {
-      if ( final_attr.text_outline_width_defined ) {
-        oss << " stroke-width=" << final_attr.text_outline_width.SVG();
-      }
+      oss << " stroke-width=" << final_attr.text_outline_width.SVG();
       oss << " stroke-dasharray=\"none\"";
-      oss << " stroke=" << final_attr.text_outline_color.SVG();
+      oss << final_attr.text_outline_color.SVG( "stroke" );
     } else {
       oss << " stroke=\"none\"";
     }
-    if ( final_attr.text_color.IsDefined() ) {
-      oss << " fill=" << final_attr.text_color.SVG();
-    }
+    oss << final_attr.text_color.SVG( "fill" );
   } else {
     if ( line_width_defined ) {
       oss << " stroke-width=" << line_width.SVG();
@@ -227,15 +264,15 @@ std::string Attributes::SVG( bool text )
         default              : oss << "\"";
       }
     }
-    if ( line_color.IsDefined() ) {
-      oss << " stroke=" << line_color.SVG();
-    }
-    if ( fill_color.IsDefined() ) {
-      oss << " fill=" << fill_color.SVG();
-    }
+    oss << line_color.SVG( "stroke" );
+    oss << fill_color.SVG( "fill" );
   }
 
   oss << text_font.SVG() << object->TransSVG();
+
+  if ( opacity_defined ) {
+    oss << " opacity=\"" << opacity << "%\"";
+  }
 
   return oss.str();
 }
