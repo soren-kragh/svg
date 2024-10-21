@@ -19,8 +19,6 @@
 
 namespace SVG {
 
-class Object;
-
 class Attributes
 {
   friend class Line;

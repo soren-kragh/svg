@@ -16,14 +16,11 @@
 #include <vector>
 
 #include <svg_point.h>
-#include <svg_attributes.h>
-#include <svg_transform.h>
 #include <svg_boundary_box.h>
+#include <svg_transform.h>
+#include <svg_attributes.h>
 
 namespace SVG {
-
-class Canvas;
-class Group;
 
 class Object
 {

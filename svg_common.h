@@ -33,7 +33,21 @@
 namespace SVG {
 
   class U;
+  class Point;
+  class BoundaryBox;
+  class Transform;
+  class Color;
+  class Font;
+  class Attributes;
   class Object;
+  class Group;
+  class Line;
+  class Rect;
+  class Text;
+  class Poly;
+  class Circle;
+  class Ellipse;
+  class Canvas;
 
   enum class AnchorX { Min, Mid, Max };
   enum class AnchorY { Min, Mid, Max };

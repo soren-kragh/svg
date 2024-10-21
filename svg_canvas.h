@@ -14,6 +14,12 @@
 #pragma once
 
 #include <svg_group.h>
+#include <svg_line.h>
+#include <svg_rect.h>
+#include <svg_poly.h>
+#include <svg_circle.h>
+#include <svg_ellipse.h>
+#include <svg_text.h>
 
 namespace SVG {
 

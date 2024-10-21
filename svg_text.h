@@ -14,7 +14,6 @@
 #pragma once
 
 #include <svg_object.h>
-#include <svg_font.h>
 
 namespace SVG {
 

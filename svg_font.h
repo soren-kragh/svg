@@ -13,7 +13,6 @@
 
 #pragma once
 
-#include <svg_common.h>
 #include <svg_u.h>
 
 namespace SVG {
