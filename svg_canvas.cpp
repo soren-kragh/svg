@@ -88,6 +88,7 @@ std::string Canvas::GenSVG( U margin )
     +margin_x - boundary_box.min.x,
     -margin_y - boundary_box.max.y
   );
+  top_group->Prune();
   top_group->GenSVG( oss, indent );
 
   indent.resize( indent.size() - 2 );

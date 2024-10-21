@@ -44,6 +44,10 @@ public:
 
   bool Empty( void ) override;
 
+  // Recursively remove all empty groups; return true if this group thus became
+  // empty itself.
+  bool Prune( void ) override;
+
 private:
 
   void UpdateBB(
