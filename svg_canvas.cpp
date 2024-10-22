@@ -25,7 +25,7 @@ Canvas::Canvas( void )
   top_group->Attr()->SetLineSolid();
   top_group->Attr()->SetLineCap( LineCap::Butt );
   top_group->Attr()->SetLineJoin( LineJoin::Sharp );
-  top_group->Attr()->LineColor()->Set( ColorName::Black );
+  top_group->Attr()->LineColor()->Set( ColorName::black );
   top_group->Attr()->FillColor()->Clear();
   top_group->Attr()->TextFont()->SetFamily( "Courier New" );
   top_group->Attr()->TextFont()->SetSize( 12 );
@@ -34,7 +34,7 @@ Canvas::Canvas( void )
   top_group->Attr()->SetTextAnchorY( AnchorY::Min );
   top_group->Attr()->SetTextOutlineWidth( 0 );
   top_group->Attr()->TextOutlineColor()->Clear();
-  top_group->Attr()->TextColor()->Set( ColorName::Black );
+  top_group->Attr()->TextColor()->Set( ColorName::black );
 }
 
 Canvas::~Canvas( void )
