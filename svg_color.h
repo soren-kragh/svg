@@ -19,40 +19,60 @@ namespace SVG {
 
 class Color
 {
+  friend class Canvas;
+  friend class Attributes;
 
 public:
 
   Color( void );
   Color( uint8_t r, uint8_t g, uint8_t b );
+  Color( ColorName color, float lighten = 0.0 );
+  Color( const std::string color_name, float lighten = 0.0 );
   Color( Color* color );
 
-  void Set( uint8_t r, uint8_t g, uint8_t b );
+  Color* Set( uint8_t r, uint8_t g, uint8_t b );
 
-  // lighten and darken must be in the range [0.0; 1.0].
-  void Set( ColorName color, float lighten = 0.0, float darken = 0.0 );
+  // The lighten value must be in the range [-1.0; 1.0]; a negative value
+  // darkens the color.
+  Color* Set( ColorName color, float lighten = 0.0 );
 
-  void Set( Color* color );
+  // Can be any of the 147 named SVG color codes. Returns nullptr if an invalid
+  // color name is given.
+  Color* Set( const std::string color_name, float lighten = 0.0 );
 
-  // Factor must be in the range [0.0; 1.0].
-  void Lighten( float f );
-  void Darken( float f );
+  Color* Set( Color* color );
 
-  void Clear( void );
+  // opacity/transparency is a value in the range [0.0; 1.0]; default is
+  // 1.0/0.0. Note that opacity/transparency may not be supported by all
+  // viewers.
+  Color* SetOpacity( float opacity );
+  Color* SetTransparency( float transparency )
+  {
+    return SetOpacity( 1.0 - transparency );
+  }
 
-  bool IsDefined();
-  bool IsClear();
+  // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
+  // effect.
+  Color* Lighten( float f );
+  Color* Darken( float f );
 
-  std::string SVG( bool quoted = true );
+  Color* Clear( void );
+
+  bool IsDefined( void ) { return rgb_defined; }
+  bool IsClear( void ) { return rgb_none; }
 
 private:
 
-  bool defined;
+  std::string SVG( const std::string name );
 
+  bool    rgb_defined;
+  bool    rgb_none;
   uint8_t r;
   uint8_t g;
   uint8_t b;
 
-  bool invisible;
+  bool  opacity_defined;
+  float opacity;
 
 };
 

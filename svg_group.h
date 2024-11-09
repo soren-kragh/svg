@@ -15,18 +15,13 @@
 
 #include <deque>
 
-#include <svg_line.h>
-#include <svg_rect.h>
-#include <svg_poly.h>
-#include <svg_circle.h>
-#include <svg_ellipse.h>
-#include <svg_text.h>
+#include <svg_object.h>
 
 namespace SVG {
 
 class Group : public Object
 {
-  friend Canvas;
+  friend class Canvas;
 
 public:
 
@@ -48,6 +43,10 @@ public:
   Object* Last( void ) { return last; }
 
   bool Empty( void ) override;
+
+  // Recursively remove all empty groups; return true if this group thus became
+  // empty itself.
+  bool Prune( void ) override;
 
 private:
 

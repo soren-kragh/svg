@@ -87,6 +87,20 @@ bool Group::Empty( void )
   return true;
 }
 
+bool Group::Prune( void )
+{
+  for ( auto it = objects.begin(); it != objects.end(); ) {
+    if ( (*it)->Prune() ) {
+      if ( last == *it ) last = nullptr;
+      delete *it;
+      it = objects.erase( it );
+    } else {
+      ++it;
+    }
+  }
+  return objects.empty();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void Group::UpdateBB(

@@ -19,8 +19,6 @@
 
 namespace SVG {
 
-class Object;
-
 class Attributes
 {
   friend class Line;
@@ -35,6 +33,15 @@ public:
 
   Attributes( Object* object );
   Attributes() : Attributes( nullptr ) {}
+
+  // opacity/transparency is a value in the range [0.0; 1.0]; default is
+  // 1.0/0.0. Note that opacity/transparency may not be supported by all
+  // viewers.
+  Attributes* SetOpacity( float opacity );
+  Attributes* SetTransparency( float transparency )
+  {
+    return SetOpacity( 1.0 - transparency );
+  }
 
   Attributes* SetLineWidth( U width );
   Attributes* SetLineSolid();
@@ -67,6 +74,9 @@ private:
   std::string SVG( bool text = false );
 
   Object* object;
+
+  bool  opacity_defined;
+  float opacity;
 
   bool     line_width_defined;
   U        line_width;

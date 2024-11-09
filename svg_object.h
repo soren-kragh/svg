@@ -16,14 +16,11 @@
 #include <vector>
 
 #include <svg_point.h>
-#include <svg_attributes.h>
-#include <svg_transform.h>
 #include <svg_boundary_box.h>
+#include <svg_transform.h>
+#include <svg_attributes.h>
 
 namespace SVG {
-
-class Canvas;
-class Group;
 
 class Object
 {
@@ -70,8 +67,12 @@ public:
     transform.rotate_point.y        = y;
   }
 
-  // Returns true if the object is empty, i.e. has not defined coordinates.
+  // Returns true if the object is empty, i.e. has no defined coordinates.
   virtual bool Empty( void ) { return false; }
+
+  // Recursively remove all empty objects; return true if this object thus
+  // became empty itself.
+  virtual bool Prune( void ) { return false; }
 
   // GetBB() errors out when used on empty object as there are no defined
   // coordinates.

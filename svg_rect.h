@@ -19,7 +19,7 @@ namespace SVG {
 
 class Rect : public Object
 {
-  friend Canvas;
+  friend class Canvas;
 
 public:
 

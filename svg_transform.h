@@ -13,10 +13,7 @@
 
 #pragma once
 
-#include <svg_u.h>
-#include <svg_point.h>
 #include <svg_boundary_box.h>
-#include <svg_attributes.h>
 
 namespace SVG {
 

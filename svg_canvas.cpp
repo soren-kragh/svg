@@ -25,7 +25,7 @@ Canvas::Canvas( void )
   top_group->Attr()->SetLineSolid();
   top_group->Attr()->SetLineCap( LineCap::Butt );
   top_group->Attr()->SetLineJoin( LineJoin::Sharp );
-  top_group->Attr()->LineColor()->Set( ColorName::Black );
+  top_group->Attr()->LineColor()->Set( ColorName::black );
   top_group->Attr()->FillColor()->Clear();
   top_group->Attr()->TextFont()->SetFamily( "Courier New" );
   top_group->Attr()->TextFont()->SetSize( 12 );
@@ -34,7 +34,7 @@ Canvas::Canvas( void )
   top_group->Attr()->SetTextAnchorY( AnchorY::Min );
   top_group->Attr()->SetTextOutlineWidth( 0 );
   top_group->Attr()->TextOutlineColor()->Clear();
-  top_group->Attr()->TextColor()->Set( ColorName::Black );
+  top_group->Attr()->TextColor()->Set( ColorName::black );
 }
 
 Canvas::~Canvas( void )
@@ -78,7 +78,7 @@ std::string Canvas::GenSVG( U margin )
 
   indent.resize( indent.size() + 2, ' ' );
 
-  if ( !Background()->IsClear() ) {
+  if ( Background()->rgb_defined && !Background()->rgb_none ) {
     Rect* rect = new Rect( 0, 0, canvas_w, -canvas_h );
     rect->Attr()->FillColor()->Set( &background );
     rect->Attr()->LineColor()->Clear();
@@ -88,6 +88,7 @@ std::string Canvas::GenSVG( U margin )
     +margin_x - boundary_box.min.x,
     -margin_y - boundary_box.max.y
   );
+  top_group->Prune();
   top_group->GenSVG( oss, indent );
 
   indent.resize( indent.size() - 2 );
