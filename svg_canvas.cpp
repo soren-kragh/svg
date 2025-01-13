@@ -67,7 +67,7 @@ std::string Canvas::GenSVG( U margin )
   canvas_w = boundary_box.max.x - boundary_box.min.x + 2*margin_x;
   canvas_h = boundary_box.max.y - boundary_box.min.y + 2*margin_y;
 
-  oss << "<?xml version=\"1.0\" standalone=\"no\"?>" << "\n";
+  oss << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << "\n";
   oss
     << "<svg"
     << " version=\"1.1\""

@@ -33,8 +33,15 @@ public:
   Font* SetSize( U size );
   Font* SetBold( bool bold = true );
 
-  U GetWidth( const std::string str );
-  U GetWidth( U length = 1 );
+  // Used to increase/decrease the width/height/baseline by the given factor.
+  // The font dimensions are normally determined based on the size and assuming
+  // mono-space Latin letters, but if for example wider letters are used the
+  // width can be scaled up.
+  Font* SetWidthFactor( float factor );
+  Font* SetHeightFactor( float factor );
+  Font* SetBaselineFactor( float factor );
+
+  U GetWidth( void );
   U GetHeight( void );
   U GetBaseline( void );
 
@@ -47,6 +54,15 @@ private:
 
   bool size_defined;
   U    size;
+
+  bool  width_factor_defined;
+  float width_factor;
+
+  bool  height_factor_defined;
+  float height_factor;
+
+  bool  baseline_factor_defined;
+  float baseline_factor;
 
   bool weight_defined;
   bool weight_bold;

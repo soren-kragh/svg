@@ -22,23 +22,23 @@ Font::Font( void )
   family_defined = false;
   size_defined = false;
   size = 0;
+  width_factor_defined = false;
+  width_factor = 1.0;
+  height_factor_defined = false;
+  height_factor = 1.0;
+  baseline_factor_defined = false;
+  baseline_factor = 1.0;
   weight_defined = false;
   weight_bold = false;
 }
 
-Font::Font( const std::string family )
+Font::Font( const std::string family ) : Font()
 {
-  size_defined = false;
-  size = 0;
-  weight_defined = false;
-  weight_bold = false;
   SetFamily( family );
 }
 
-Font::Font( const std::string family, U size )
+Font::Font( const std::string family, U size ) : Font()
 {
-  weight_defined = false;
-  weight_bold = false;
   SetFamily( family );
   SetSize( size );
 }
@@ -72,14 +72,30 @@ Font* Font::SetBold( bool bold )
   return this;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-U Font::GetWidth( const std::string str )
+Font* Font::SetWidthFactor( float factor )
 {
-  return GetWidth( str.length() );
+  width_factor_defined = true;
+  width_factor = factor;
+  return this;
 }
 
-U Font::GetWidth( U length )
+Font* Font::SetHeightFactor( float factor )
+{
+  height_factor_defined = true;
+  height_factor = factor;
+  return this;
+}
+
+Font* Font::SetBaselineFactor( float factor )
+{
+  baseline_factor_defined = true;
+  baseline_factor = factor;
+  return this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+U Font::GetWidth( void )
 {
   if ( !family_defined ) {
     SVG_FATAL( "SVG::Font::GetWidth: font family not defined" );
@@ -87,7 +103,7 @@ U Font::GetWidth( U length )
   if ( !size_defined ) {
     SVG_FATAL( "SVG::Font::GetWidth: font size not defined" );
   }
-  return length * size * 0.52;
+  return size * 0.54 * width_factor;
 }
 
 U Font::GetHeight( void )
@@ -98,7 +114,7 @@ U Font::GetHeight( void )
   if ( !size_defined ) {
     SVG_FATAL( "SVG::Font::GetHeight: font size not defined" );
   }
-  return size;
+  return size * height_factor;
 }
 
 U Font::GetBaseline( void )
@@ -109,7 +125,7 @@ U Font::GetBaseline( void )
   if ( !size_defined ) {
     SVG_FATAL( "SVG::Font::GetBaseline: font size not defined" );
   }
-  return size * 0.22;
+  return size * height_factor * 0.22 * baseline_factor;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

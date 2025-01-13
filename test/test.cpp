@@ -36,11 +36,12 @@ void grid( Group* g )
 
 void test01( Group* g )
 {
-  std::string str = "Hf0W1yH";
-  Font font( "Courier New", 120 );
+  std::string str = "こんにちは世界";
+  Font font( "Courier New", 80 );
   font.SetBold();
+  font.SetWidthFactor( 1.8 )->SetHeightFactor( 1.1 )->SetBaselineFactor( 0.8 );
 
-  U w = font.GetWidth( str );
+  U w = font.GetWidth() * Text::UTF8_CharNum( str );
   U h = font.GetHeight();
 
   g->Attr()->TextFont()->Set( font );

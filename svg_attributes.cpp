@@ -173,6 +173,26 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.text_font.weight_defined && text_font.weight_defined ) {
     final_attr.text_font.SetBold( text_font.weight_bold );
   }
+
+  if (
+    !final_attr.text_font.width_factor_defined &&
+    text_font.width_factor_defined )
+  {
+    final_attr.text_font.SetWidthFactor( text_font.width_factor );
+  }
+  if (
+    !final_attr.text_font.height_factor_defined &&
+    text_font.height_factor_defined )
+  {
+    final_attr.text_font.SetHeightFactor( text_font.height_factor );
+  }
+  if (
+    !final_attr.text_font.baseline_factor_defined &&
+    text_font.baseline_factor_defined )
+  {
+    final_attr.text_font.SetBaselineFactor( text_font.baseline_factor );
+  }
+
   if ( !final_attr.text_anchor_x_defined && text_anchor_x_defined ) {
     final_attr.SetTextAnchorX( text_anchor_x );
   }
