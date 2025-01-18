@@ -25,11 +25,11 @@ class Font
 public:
 
   Font( void );
-  Font( const std::string family );
-  Font( const std::string family, U size );
+  Font( const std::string& family );
+  Font( const std::string& family, U size );
 
   Font* Set( const Font& font );
-  Font* SetFamily( const std::string family );
+  Font* SetFamily( const std::string& family );
   Font* SetSize( U size );
   Font* SetBold( bool bold = true );
 
