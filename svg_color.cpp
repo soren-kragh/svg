@@ -28,25 +28,27 @@ struct RGB {
 Color::Color( void )
 {
   rgb_defined = false;
+  rgb_none = true;
+  r = 0;
+  g = 0;
+  b = 0;
   opacity_defined = false;
+  opacity = 1.0;
 }
 
-Color::Color( uint8_t r, uint8_t g, uint8_t b )
+Color::Color( uint8_t r, uint8_t g, uint8_t b ) : Color()
 {
   Set( r, g, b );
-  opacity_defined = false;
 }
 
-Color::Color( ColorName color, float lighten )
+Color::Color( ColorName color, float lighten ) : Color()
 {
   Set( color, lighten );
-  opacity_defined = false;
 }
 
-Color::Color( const std::string& color_name, float lighten )
+Color::Color( const std::string& color_name, float lighten ) : Color()
 {
   Set( color_name, lighten );
-  opacity_defined = false;
 }
 
 Color::Color( Color* color )
