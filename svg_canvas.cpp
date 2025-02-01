@@ -33,8 +33,10 @@ Canvas::Canvas( void )
   top_group->Attr()->SetTextAnchorX( AnchorX::Min );
   top_group->Attr()->SetTextAnchorY( AnchorY::Min );
   top_group->Attr()->SetTextOutlineWidth( 0 );
-  top_group->Attr()->TextOutlineColor()->Clear();
+  top_group->Attr()->TextOutlineColor()->Set( ColorName::black );
+  top_group->Attr()->TextOutlineColor()->SetOpacity( 1.0 );
   top_group->Attr()->TextColor()->Set( ColorName::black );
+  top_group->Attr()->TextColor()->SetOpacity( 1.0 );
 }
 
 Canvas::~Canvas( void )

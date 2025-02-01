@@ -47,6 +47,13 @@ public:
     AnchorY anchor_y,
     U x, U y
   );
+  void MoveTo(
+    AnchorX anchor_x,
+    AnchorY anchor_y,
+    Point p
+  ) {
+    MoveTo( anchor_x, anchor_y, p.x, p.y );
+  }
 
   void Rotate(
     int theta,
