@@ -56,6 +56,7 @@ public:
   Color* Lighten( float f );
   Color* Darken( float f );
 
+  Color* Undef( void );
   Color* Clear( void );
 
   bool IsDefined( void ) { return rgb_defined; }

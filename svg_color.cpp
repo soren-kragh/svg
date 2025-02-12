@@ -27,13 +27,7 @@ struct RGB {
 
 Color::Color( void )
 {
-  rgb_defined = false;
-  rgb_none = true;
-  r = 0;
-  g = 0;
-  b = 0;
-  opacity_defined = false;
-  opacity = 1.0;
+  Undef();
 }
 
 Color::Color( uint8_t r, uint8_t g, uint8_t b ) : Color()
@@ -417,6 +411,18 @@ Color* Color::Lighten( float f )
 Color* Color::Darken( float f )
 {
   Lighten( -f );
+  return this;
+}
+
+Color* Color::Undef( void )
+{
+  rgb_defined = false;
+  rgb_none = true;
+  r = 0;
+  g = 0;
+  b = 0;
+  opacity_defined = false;
+  opacity = 1.0;
   return this;
 }
 
