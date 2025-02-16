@@ -23,21 +23,40 @@ class BoundaryBox
 
 public:
 
-  BoundaryBox( void );
+  Point min;
+  Point max;
+
+  friend std::ostream& operator<<( std::ostream& os, BoundaryBox const& bb ) {
+    os
+      << '(' << bb.min.x << ',' << bb.min.y << ')'
+      << ' '
+      << '(' << bb.max.x << ',' << bb.max.y << ')';
+    return os;
+  }
+
+  BoundaryBox( void ) {
+    Reset();
+  }
+  BoundaryBox( Point min, Point max ) : min( min ), max( max ) {}
 
   void Update( U x, U y );
   void Update( Point p )
   {
     Update( p.x, p.y );
   }
-  void Update( const BoundaryBox& bb );
+  void Update( const BoundaryBox& bb ) {
+    Update( bb.min );
+    Update( bb.max );
+  }
 
-  void Reset( void );
+  bool Defined( void ) {
+    return min.x <= max.x;
+  }
 
-  Point min;
-  Point max;
-
-  bool defined;
+  void Reset( void ) {
+    min.x = +1;
+    max.x = -1;
+  }
 
 };
 

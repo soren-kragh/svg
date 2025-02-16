@@ -59,7 +59,7 @@ BoundaryBox Object::GetBB( void )
   BoundaryBox bb;
   std::vector< Transform > transforms;
   UpdateBB( bb, true, transforms );
-  if ( !bb.defined ) {
+  if ( !bb.Defined() ) {
     SVG_FATAL( "SVG::Object::GetBB: empty group" );
   }
   return bb;

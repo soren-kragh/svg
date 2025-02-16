@@ -17,14 +17,9 @@ using namespace SVG;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-BoundaryBox::BoundaryBox( void )
-{
-  Reset();
-}
-
 void BoundaryBox::Update( U x, U y )
 {
-  if ( defined ) {
+  if ( Defined() ) {
     if ( min.x > x ) min.x = x;
     if ( min.y > y ) min.y = y;
     if ( max.x < x ) max.x = x;
@@ -32,23 +27,7 @@ void BoundaryBox::Update( U x, U y )
   } else {
     min.x = x; min.y = y;
     max.x = x; max.y = y;
-    defined = true;
   }
-}
-
-void BoundaryBox::Update( const BoundaryBox& bb )
-{
-  Update( bb.min );
-  Update( bb.max );
-}
-
-void BoundaryBox::Reset( void )
-{
-  defined = false;
-  min.x = 0;
-  min.y = 0;
-  max.x = 0;
-  max.y = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

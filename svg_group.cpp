@@ -118,7 +118,7 @@ void Group::UpdateBB(
     }
   }
   if ( first && transform.rotate_theta == 0 ) {
-    if ( bb.defined ) {
+    if ( bb.Defined() ) {
       boundary_box.Update(
         bb.min.x + transform.translate_dx,
         bb.min.y + transform.translate_dy
