@@ -26,7 +26,7 @@ class U
 
 public:
 
-  U( void ) {}
+  U( void ) : value( 0.0 ) {}
 
   template <
     typename T,
