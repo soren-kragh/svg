@@ -58,38 +58,44 @@ Color* Canvas::Background( void )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string Canvas::GenSVG( U margin )
+std::string Canvas::GenSVG( U margin, const std::string& id )
 {
   std::ostringstream oss;
   std::string indent;
   BoundaryBox boundary_box = top_group->GetBB();
 
-  margin_x = margin;
-  margin_y = margin;
-  canvas_w = boundary_box.max.x - boundary_box.min.x + 2*margin_x;
-  canvas_h = boundary_box.max.y - boundary_box.min.y + 2*margin_y;
+  boundary_box.min.x -= margin;
+  boundary_box.min.y -= margin;
+  boundary_box.max.x += margin;
+  boundary_box.max.y += margin;
+  U canvas_w = boundary_box.max.x - boundary_box.min.x;
+  U canvas_h = boundary_box.max.y - boundary_box.min.y;
+  U svg_min_x = +boundary_box.min.x;
+  U svg_min_y = -boundary_box.max.y;
 
-  oss << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << "\n";
   oss
     << "<svg"
-    << " version=\"1.1\""
     << " xmlns=\"http://www.w3.org/2000/svg\""
+    << " viewBox="
+    << '"' << svg_min_x.SVG( false )
+    << ' ' << svg_min_y.SVG( false )
+    << ' ' << canvas_w.SVG( false )
+    << ' ' << canvas_h.SVG( false ) << '"'
     << " width=" << canvas_w.SVG()
-    << " height=" << canvas_h.SVG()
-    << '>' << "\n";
+    << " height=" << canvas_h.SVG();
+  if ( !id.empty() ) {
+    oss << " id=\"" << id << '"';
+  }
+  oss << '>' << "\n";
 
   indent.resize( indent.size() + 2, ' ' );
 
-  if ( Background()->rgb_defined && !Background()->rgb_none ) {
-    Rect* rect = new Rect( 0, 0, canvas_w, -canvas_h );
+  if ( !Background()->IsClear() ) {
+    Rect* rect = new Rect( boundary_box.min, boundary_box.max );
     rect->Attr()->FillColor()->Set( &background );
     rect->Attr()->LineColor()->Clear();
     rect->GenSVG( oss, indent );
   }
-  top_group->Move(
-    +margin_x - boundary_box.min.x,
-    -margin_y - boundary_box.max.y
-  );
   top_group->Prune();
   top_group->GenSVG( oss, indent );
 

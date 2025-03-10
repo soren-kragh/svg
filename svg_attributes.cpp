@@ -294,6 +294,10 @@ std::string Attributes::SVG( bool text )
     oss << " opacity=\"" << std::setprecision( 3 ) << opacity << '"';
   }
 
+  for ( const auto& attr : custom ) {
+    oss << ' ' << attr;
+  }
+
   return oss.str();
 }
 

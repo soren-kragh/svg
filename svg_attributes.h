@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <svg_u.h>
 #include <svg_color.h>
 #include <svg_font.h>
@@ -69,6 +71,12 @@ public:
   // detached objects or objects part of detached group hierarchies.
   void Collect( Attributes& final_attr );
 
+  // Add SVG custom attributes. The given attr must include everything,
+  // e.g. 'id="myId"'.
+  void AddCustom( const std::string& attr ) {
+    custom.push_back( attr );
+  }
+
 private:
 
   std::string SVG( bool text = false );
@@ -101,6 +109,7 @@ private:
   Color   text_outline_color;
   Color   text_color;
 
+  std::vector< std::string > custom;
 };
 
 }
