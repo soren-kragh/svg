@@ -35,9 +35,8 @@ public:
 
   Color* Background( void );
 
-  // An optional id in case the SVG object needs to be referenced from
-  // JavaScript etc.
-  std::string GenSVG( U margin = 0, const std::string& id = "" );
+  // Extra attributes may optionally be added to the SVG.
+  std::string GenSVG( U margin = 0, const std::string& attr = "" );
 
 private:
 

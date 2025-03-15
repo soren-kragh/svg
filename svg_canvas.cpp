@@ -58,7 +58,7 @@ Color* Canvas::Background( void )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string Canvas::GenSVG( U margin, const std::string& id )
+std::string Canvas::GenSVG( U margin, const std::string& attr )
 {
   std::ostringstream oss;
   std::string indent;
@@ -83,8 +83,8 @@ std::string Canvas::GenSVG( U margin, const std::string& id )
     << ' ' << canvas_h.SVG( false ) << '"'
     << " width=" << canvas_w.SVG()
     << " height=" << canvas_h.SVG();
-  if ( !id.empty() ) {
-    oss << " id=\"" << id << '"';
+  if ( !attr.empty() ) {
+    oss << ' ' << attr;
   }
   oss << '>' << "\n";
 
