@@ -385,6 +385,19 @@ Color* Color::Set( Color* color )
   return this;
 }
 
+Color* Color::Set( Color* color1, Color* color2, float f )
+{
+  this->Undef();
+  if ( !color1->IsClear() && !color2->IsClear() ) {
+    this->Set(
+      color1->r * (1 - f) + color2->r * f,
+      color1->g * (1 - f) + color2->g * f,
+      color1->b * (1 - f) + color2->b * f
+    );
+  }
+  return this;
+}
+
 Color* Color::SetOpacity( float opacity )
 {
   if ( opacity < 0.0 ) opacity = 0.0;
@@ -438,7 +451,9 @@ std::string Color::SVG( const std::string& name )
 {
   std::ostringstream oss;
   if ( rgb_defined ) {
-    oss << ' ' << name << '=';
+    if ( !name.empty() ) {
+      oss << ' ' << name << '=';
+    }
     if ( rgb_none ) {
       oss << "\"none\"";
     } else {
@@ -451,7 +466,7 @@ std::string Color::SVG( const std::string& name )
         << '"';
     }
   }
-  if ( opacity_defined && !(rgb_defined && rgb_none) ) {
+  if ( !name.empty() && opacity_defined && !(rgb_defined && rgb_none) ) {
     oss
       << std::dec
       << ' ' << name << "-opacity=\""

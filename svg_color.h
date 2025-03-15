@@ -42,6 +42,9 @@ public:
 
   Color* Set( Color* color );
 
+  // Set color between two colors.
+  Color* Set( Color* color1, Color* color2, float f = 0.5 );
+
   // opacity/transparency is a value in the range [0.0; 1.0]; default is
   // 1.0/0.0. Note that opacity/transparency may not be supported by all
   // viewers.
@@ -62,9 +65,9 @@ public:
   bool IsDefined( void ) { return rgb_defined; }
   bool IsClear( void ) { return rgb_none; }
 
-private:
+  std::string SVG( const std::string& name = "" );
 
-  std::string SVG( const std::string& name );
+private:
 
   bool    rgb_defined;
   bool    rgb_none;
