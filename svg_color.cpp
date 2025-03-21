@@ -13,6 +13,7 @@
 
 #include <map>
 
+#include <cmath>
 #include <svg_color.h>
 
 using namespace SVG;
@@ -473,6 +474,30 @@ std::string Color::SVG( const std::string& name )
       << std::setprecision( 3 ) << opacity << '"';
   }
   return oss.str();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+float Color::Diff( Color* color1, Color* color2 )
+{
+  if ( color1->IsClear() || color2->IsClear() ) return 0.0;
+
+  int delta_r = static_cast<int>( color1->r ) - static_cast<int>( color2->r );
+  int delta_g = static_cast<int>( color1->g ) - static_cast<int>( color2->g );
+  int delta_b = static_cast<int>( color1->b ) - static_cast<int>( color2->b );
+
+  float r_mean = (static_cast<float>( color1->r ) + color2->r) / 2.0;
+
+  float term_r = (2.0 + r_mean / 256.0) * delta_r * delta_r;
+  float term_g = 4.0 * delta_g * delta_g;
+  float term_b = (2.0 + (255.0 - r_mean) / 256.0) * delta_b * delta_b;
+
+  float distance = std::sqrt( term_r + term_g + term_b );
+
+  const float max_distance = 764.833;
+  float result = distance / max_distance;
+
+  return result > 1.0 ? 1.0 : (result < 0.0 ? 0.0 : result);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
