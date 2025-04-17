@@ -37,7 +37,15 @@ public:
   BoundaryBox( void ) {
     Reset();
   }
-  BoundaryBox( Point min, Point max ) : min( min ), max( max ) {}
+  BoundaryBox( Point p1, Point p2 ) {
+    Reset();
+    Update( p1 );
+    Update( p2 );
+  }
+  BoundaryBox( const BoundaryBox& bb ) {
+    Reset();
+    Update( bb );
+  }
 
   void Update( U x, U y );
   void Update( Point p )
@@ -45,11 +53,13 @@ public:
     Update( p.x, p.y );
   }
   void Update( const BoundaryBox& bb ) {
-    Update( bb.min );
-    Update( bb.max );
+    if ( bb.Defined() ) {
+      Update( bb.min );
+      Update( bb.max );
+    }
   }
 
-  bool Defined( void ) {
+  bool Defined( void ) const {
     return min.x <= max.x;
   }
 
