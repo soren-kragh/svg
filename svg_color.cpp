@@ -497,7 +497,27 @@ float Color::Diff( Color* color1, Color* color2 )
   const float max_distance = 764.833;
   float result = distance / max_distance;
 
-  return result > 1.0 ? 1.0 : (result < 0.0 ? 0.0 : result);
+  return (result > 1.0) ? 1.0 : (result < 0.0) ? 0.0 : result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Color::operator==( const Color& other ) const {
+  if ( rgb_defined != other.rgb_defined ) return false;
+  if ( opacity_defined != other.opacity_defined ) return false;
+
+  if ( rgb_defined ) {
+    if ( rgb_none != other.rgb_none ) return false;
+    if ( !rgb_none && (r != other.r || g != other.g || b != other.b) ) {
+      return false;
+    }
+  }
+
+  if ( opacity_defined && opacity != other.opacity ) {
+    return false;
+  }
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

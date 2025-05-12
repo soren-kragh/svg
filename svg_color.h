@@ -83,6 +83,8 @@ public:
   // Return the perceived difference [0.0;1.0] between two colors.
   static float Diff( Color* color1, Color* color2 );
 
+  bool operator==( const Color& other ) const;
+
 };
 
 }
