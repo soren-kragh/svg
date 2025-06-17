@@ -27,12 +27,13 @@ Canvas::Canvas( void )
   top_group->Attr()->SetLineJoin( LineJoin::Sharp );
   top_group->Attr()->LineColor()->Set( ColorName::black );
   top_group->Attr()->FillColor()->Clear();
-  top_group->Attr()->TextFont()->SetFamily( "Courier New" );
+  top_group->Attr()->TextFont()->SetFamily( "monospace" );
   top_group->Attr()->TextFont()->SetSize( 12 );
   top_group->Attr()->TextFont()->SetBold( false );
   top_group->Attr()->SetTextAnchorX( AnchorX::Min );
   top_group->Attr()->SetTextAnchorY( AnchorY::Min );
   top_group->Attr()->SetTextOutlineWidth( 0 );
+  top_group->Attr()->SetTextMathDigits( false );
   top_group->Attr()->TextOutlineColor()->Set( ColorName::black );
   top_group->Attr()->TextOutlineColor()->SetOpacity( 1.0 );
   top_group->Attr()->TextColor()->Set( ColorName::black );

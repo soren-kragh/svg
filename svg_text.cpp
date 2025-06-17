@@ -90,6 +90,21 @@ void Text::UpdateBB(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static const char MATH_SANS_DIGITS[ 10 ][ 4 ] = {
+  { '\xF0', '\x9D', '\x9F', '\xA2' }, // 𝟢 (U+1D7E2)
+  { '\xF0', '\x9D', '\x9F', '\xA3' }, // 𝟣 (U+1D7E3)
+  { '\xF0', '\x9D', '\x9F', '\xA4' }, // 𝟤 (U+1D7E4)
+  { '\xF0', '\x9D', '\x9F', '\xA5' }, // 𝟥 (U+1D7E5)
+  { '\xF0', '\x9D', '\x9F', '\xA6' }, // 𝟦 (U+1D7E6)
+  { '\xF0', '\x9D', '\x9F', '\xA7' }, // 𝟧 (U+1D7E7)
+  { '\xF0', '\x9D', '\x9F', '\xA8' }, // 𝟨 (U+1D7E8)
+  { '\xF0', '\x9D', '\x9F', '\xA9' }, // 𝟩 (U+1D7E9)
+  { '\xF0', '\x9D', '\x9F', '\xAA' }, // 𝟪 (U+1D7EA)
+  { '\xF0', '\x9D', '\x9F', '\xAB' }  // 𝟫 (U+1D7EB)
+};
+
+//------------------------------------------------------------------------------
+
 void Text::GenSVG(
   std::ostringstream& oss,
   std::string& indent
@@ -101,10 +116,11 @@ void Text::GenSVG(
   U w;          // Width of one character.
   U h;          // Height of one character.
 
+  Attributes final_attr = Attributes( nullptr );
+  CollectAttr( final_attr );
+
   // Emulate text-anchor by adjusting the x- y-coordinates.
   {
-    Attributes final_attr = Attributes( nullptr );
-    CollectAttr( final_attr );
     h = final_attr.TextFont()->GetHeight();
     w = final_attr.TextFont()->GetWidth();
     if ( final_attr.text_anchor_x == AnchorX::Min ) x += w / 2;
@@ -134,7 +150,11 @@ void Text::GenSVG(
         default : {
           if ( b < ' ' ) {
             s = ' ';
-          } else {
+          } else
+          if ( final_attr.text_math_digits && b >= '0' && b <= '9' ) {
+            s.assign( MATH_SANS_DIGITS[ b - '0' ], 4 );
+          } else
+          {
             s.assign( oit, cit );
           }
         }
