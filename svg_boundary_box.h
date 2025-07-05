@@ -47,6 +47,8 @@ public:
     Update( bb );
   }
 
+  BoundaryBox& operator=( const BoundaryBox& other ) = default;
+
   void Update( U x, U y );
   void Update( Point p )
   {
