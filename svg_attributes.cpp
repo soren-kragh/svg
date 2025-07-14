@@ -38,8 +38,8 @@ Attributes::Attributes( Object* object )
   text_anchor_y = AnchorY::Min;
   text_outline_width_defined = false;
   text_outline_width = 0;
-  text_math_digits_defined = false;
-  text_math_digits = false;
+  text_zero_to_o_defined = false;
+  text_zero_to_o = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,10 @@ Attributes* Attributes::SetTextOutlineWidth( U width )
   return this;
 }
 
-Attributes* Attributes::SetTextMathDigits( bool math_digits )
+Attributes* Attributes::SetTextZeroToO( bool zero_to_o )
 {
-  text_math_digits = math_digits;
-  text_math_digits_defined = true;
+  text_zero_to_o = zero_to_o;
+  text_zero_to_o_defined = true;
   return this;
 }
 
@@ -211,8 +211,8 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.text_outline_width_defined && text_outline_width_defined ) {
     final_attr.SetTextOutlineWidth( text_outline_width );
   }
-  if ( !final_attr.text_math_digits_defined && text_math_digits_defined ) {
-    final_attr.SetTextMathDigits( text_math_digits );
+  if ( !final_attr.text_zero_to_o_defined && text_zero_to_o_defined ) {
+    final_attr.SetTextZeroToO( text_zero_to_o );
   }
   if ( !final_attr.text_outline_color.rgb_defined && text_outline_color.rgb_defined ) {
     if ( text_outline_color.rgb_none ) {

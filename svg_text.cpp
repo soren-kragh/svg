@@ -90,21 +90,6 @@ void Text::UpdateBB(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const char MATH_SANS_DIGITS[ 10 ][ 4 ] = {
-  { '\xF0', '\x9D', '\x9F', '\xA2' }, // 𝟢 (U+1D7E2)
-  { '\xF0', '\x9D', '\x9F', '\xA3' }, // 𝟣 (U+1D7E3)
-  { '\xF0', '\x9D', '\x9F', '\xA4' }, // 𝟤 (U+1D7E4)
-  { '\xF0', '\x9D', '\x9F', '\xA5' }, // 𝟥 (U+1D7E5)
-  { '\xF0', '\x9D', '\x9F', '\xA6' }, // 𝟦 (U+1D7E6)
-  { '\xF0', '\x9D', '\x9F', '\xA7' }, // 𝟧 (U+1D7E7)
-  { '\xF0', '\x9D', '\x9F', '\xA8' }, // 𝟨 (U+1D7E8)
-  { '\xF0', '\x9D', '\x9F', '\xA9' }, // 𝟩 (U+1D7E9)
-  { '\xF0', '\x9D', '\x9F', '\xAA' }, // 𝟪 (U+1D7EA)
-  { '\xF0', '\x9D', '\x9F', '\xAB' }  // 𝟫 (U+1D7EB)
-};
-
-//------------------------------------------------------------------------------
-
 void Text::GenSVG(
   std::ostringstream& oss,
   std::string& indent
@@ -151,8 +136,8 @@ void Text::GenSVG(
           if ( b < ' ' ) {
             s = ' ';
           } else
-          if ( final_attr.text_math_digits && b >= '0' && b <= '9' ) {
-            s.assign( MATH_SANS_DIGITS[ b - '0' ], 4 );
+          if ( final_attr.text_zero_to_o && b == '0' ) {
+            s = 'O';
           } else
           {
             s.assign( oit, cit );

@@ -65,9 +65,9 @@ public:
   Color* TextOutlineColor( void ) { return &text_outline_color; }
   Color* TextColor( void ) { return &text_color; }
 
-  // Causes the digits 0 to 9 to be translated to UTF-8 Mathematical Sans-Serif
-  // Digits which may look better, specifically zero is not crossed.
-  Attributes* SetTextMathDigits( bool math_digits = true );
+  // Causes the digit 0 to to be translated to an O, which may look better
+  // as it avoids a crossed zero.
+  Attributes* SetTextZeroToO( bool zero_to_o = true );
 
   // Collect the final attributes used for the object. It will trace upwards in
   // the group hierarchy to get the various attributes as needed. Some
@@ -112,8 +112,8 @@ private:
   U       text_outline_width;
   Color   text_outline_color;
   Color   text_color;
-  bool    text_math_digits_defined;
-  bool    text_math_digits;
+  bool    text_zero_to_o_defined;
+  bool    text_zero_to_o;
 
   std::vector< std::string > custom;
 };
