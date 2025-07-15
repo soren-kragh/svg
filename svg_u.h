@@ -31,7 +31,8 @@ public:
   template <
     typename T,
     typename = typename std::enable_if<std::is_arithmetic<T>::value>::type
-  > U(T x) : value( static_cast<double>(x) ) {}
+  >
+  constexpr U(T x) : value( static_cast<double>(x) ) {}
 
   constexpr operator double() const {
     return value;
