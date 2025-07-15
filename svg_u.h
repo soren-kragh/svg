@@ -26,24 +26,24 @@ class U
 
 public:
 
-  U( void ) : value( 0.0 ) {}
+  constexpr U() : value( 0.0 ) {}
 
   template <
     typename T,
     typename = typename std::enable_if<std::is_arithmetic<T>::value>::type
   > U(T x) : value( static_cast<double>(x) ) {}
 
-  operator double() const {
+  constexpr operator double() const {
     return value;
   }
 
-  U& operator +=(const U& other)
+  constexpr U& operator +=(const U& other)
   {
     value += other.value;
     return *this;
   }
 
-  U& operator -=(const U& other)
+  constexpr U& operator -=(const U& other)
   {
     value -= other.value;
     return *this;
