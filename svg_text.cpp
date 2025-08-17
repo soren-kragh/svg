@@ -17,12 +17,12 @@ using namespace SVG;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Text::Text( U x, U y, const std::string& str )
+Text::Text( U x, U y, const std::string_view str )
 {
   p.x = x;
   p.y = y;
   this->str = str;
-  utf8_len = Text::UTF8_CharNum( str );
+  utf8_len = Text::UTF8_CharNum( this->str );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
