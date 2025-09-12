@@ -41,7 +41,7 @@ Color::Color( ColorName color, float lighten ) : Color()
   Set( color, lighten );
 }
 
-Color::Color( const std::string& color_name, float lighten ) : Color()
+Color::Color( std::string_view color_name, float lighten ) : Color()
 {
   Set( color_name, lighten );
 }
@@ -220,9 +220,9 @@ Color* Color::Set( ColorName color, float lighten )
   return this;
 }
 
-Color* Color::Set( const std::string& color_name, float lighten )
+Color* Color::Set( std::string_view color_name, float lighten )
 {
-  static std::map< std::string, ColorName > name2color = {
+  static std::map< std::string_view, ColorName > name2color = {
     { "black"               , ColorName::black                },
     { "navy"                , ColorName::navy                 },
     { "darkblue"            , ColorName::darkblue             },
@@ -448,7 +448,7 @@ Color* Color::Clear( void )
   return this;
 }
 
-std::string Color::SVG( const std::string& name )
+std::string Color::SVG( std::string_view name )
 {
   std::ostringstream oss;
   if ( rgb_defined ) {

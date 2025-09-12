@@ -22,9 +22,9 @@ class Text : public Object
 
 public:
 
-  Text( U x, U y, const std::string_view str );
-  Text( const std::string_view str ) : Text( 0, 0, str ) {}
-  Text( Point p, const std::string_view str ) : Text( p.x, p.y, str ) {}
+  Text( U x, U y, std::string_view str );
+  Text( std::string_view str ) : Text( 0, 0, str ) {}
+  Text( Point p, std::string_view str ) : Text( p.x, p.y, str ) {}
 
   // Return length of the text (in UTF-8).
   size_t Length( void ) { return utf8_len; }

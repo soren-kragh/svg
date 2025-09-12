@@ -32,12 +32,12 @@ Font::Font( void )
   weight_bold = false;
 }
 
-Font::Font( const std::string& family ) : Font()
+Font::Font( std::string_view family ) : Font()
 {
   SetFamily( family );
 }
 
-Font::Font( const std::string& family, U size ) : Font()
+Font::Font( std::string_view family, U size ) : Font()
 {
   SetFamily( family );
   SetSize( size );
@@ -51,7 +51,7 @@ Font* Font::Set( const Font& font )
   return this;
 }
 
-Font* Font::SetFamily( const std::string& family )
+Font* Font::SetFamily( std::string_view family )
 {
   this->family = family;
   family_defined = true;

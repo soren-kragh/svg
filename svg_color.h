@@ -27,7 +27,7 @@ public:
   Color( void );
   Color( uint8_t r, uint8_t g, uint8_t b );
   Color( ColorName color, float lighten = 0.0 );
-  Color( const std::string& color_name, float lighten = 0.0 );
+  Color( std::string_view color_name, float lighten = 0.0 );
   Color( Color* color );
 
   Color* Set( uint8_t r, uint8_t g, uint8_t b );
@@ -38,7 +38,7 @@ public:
 
   // Can be any of the 147 named SVG color codes. Returns nullptr if an invalid
   // color name is given.
-  Color* Set( const std::string& color_name, float lighten = 0.0 );
+  Color* Set( std::string_view color_name, float lighten = 0.0 );
 
   Color* Set( Color* color );
 
@@ -65,7 +65,7 @@ public:
   bool IsDefined( void ) { return rgb_defined; }
   bool IsClear( void ) { return rgb_none; }
 
-  std::string SVG( const std::string& name = "" );
+  std::string SVG( std::string_view name = "" );
 
 private:
 

@@ -77,8 +77,8 @@ public:
 
   // Add SVG custom attributes. The given attr must include everything,
   // e.g. 'id="myId"'.
-  void AddCustom( const std::string& attr ) {
-    custom.push_back( attr );
+  void AddCustom( std::string_view attr ) {
+    custom.emplace_back( attr );
   }
 
 private:

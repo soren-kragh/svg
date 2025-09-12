@@ -59,7 +59,7 @@ Color* Canvas::Background( void )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::string Canvas::GenSVG( U margin, const std::string& attr )
+std::string Canvas::GenSVG( U margin, std::string_view attr )
 {
   std::ostringstream oss;
   std::string indent;

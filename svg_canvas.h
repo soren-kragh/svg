@@ -36,7 +36,7 @@ public:
   Color* Background( void );
 
   // Extra attributes may optionally be added to the SVG.
-  std::string GenSVG( U margin = 0, const std::string& attr = "" );
+  std::string GenSVG( U margin = 0, std::string_view attr = "" );
 
 private:
 

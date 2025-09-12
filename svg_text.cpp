@@ -17,7 +17,7 @@ using namespace SVG;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Text::Text( U x, U y, const std::string_view str )
+Text::Text( U x, U y, std::string_view str )
 {
   p.x = x;
   p.y = y;
