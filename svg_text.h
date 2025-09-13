@@ -52,17 +52,15 @@ private:
 
 public:
 
-  // Parses the UTF-8 character identified by the iterator and advances the
-  // iterator to the next UTF-8 character; returns true if the parsed character
-  // is valid. If the iterator is at the end of the string, then it will not be
-  // advanced and false will be returned. Unless the iterator is already at the
-  // end, the iterator will always be advanced at least one byte.
-  static bool UTF8_CharAdv(
-    const std::string& s, std::string::const_iterator& it
-  );
+  // Parses the UTF-8 character identified by the index and advances the index
+  // to the next UTF-8 character; returns true if the parsed character is valid.
+  // If the index is at the end of the string, then it will not be advanced and
+  // false will be returned. Unless the index is already at the end, the index
+  // will always be advanced at least one byte.
+  static bool UTF8_CharAdv( std::string_view s, size_t& idx );
 
   // Returns number of UTF-8 characters in the given string.
-  static size_t UTF8_CharNum( const std::string& s );
+  static size_t UTF8_CharNum( std::string_view s );
 
 };
 

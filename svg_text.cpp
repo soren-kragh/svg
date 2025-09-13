@@ -120,12 +120,12 @@ void Text::GenSVG(
     << indent << "<g text-anchor=\"middle\""
     << Attr()->SVG( true ) << '>' << '\n';
 
-  auto cit = str.cbegin();
-  while ( cit != str.cend() ) {
-    auto oit = cit;
-    if ( Text::UTF8_CharAdv( str, cit ) ) {
-      std::string s;
-      uint8_t b = *oit;
+  size_t cidx = 0;
+  while ( cidx < str.size() ) {
+    size_t oidx = cidx;
+    if ( Text::UTF8_CharAdv( str, cidx ) ) {
+      std::string_view s;
+      uint8_t b = str[ oidx ];
       switch ( b ) {
         case '<'  : s = "&lt;"; break;
         case '>'  : s = "&gt;"; break;
@@ -134,13 +134,13 @@ void Text::GenSVG(
         case '"'  : s = "&quot;"; break;
         default : {
           if ( b < ' ' ) {
-            s = ' ';
+            s = " ";
           } else
           if ( final_attr.text_zero_to_o && b == '0' ) {
-            s = 'O';
+            s = "O";
           } else
           {
-            s.assign( oit, cit );
+            s = std::string_view( str.data() + oidx, cidx - oidx );
           }
         }
       }
@@ -158,24 +158,22 @@ void Text::GenSVG(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool Text::UTF8_CharAdv(
-  const std::string& s, std::string::const_iterator& it
-)
+bool Text::UTF8_CharAdv( std::string_view s, size_t& idx )
 {
   uint8_t b;
   uint32_t cp;
 
   auto do_cont = [&]( void ) {
-    if ( it == s.cend() ) return false;
-    b = *it;
+    if ( idx >= s.size() ) return false;
+    b = s[ idx ];
     if ( (b & 0xC0) != 0x80 ) return false;
-    ++it;
+    ++idx;
     cp = (cp << 6) | (b & 0x3F);
     return true;
   };
 
-  if ( it == s.cend() ) return false;
-  b = *(it++);
+  if ( idx >= s.size() ) return false;
+  b = s[ idx++ ];
 
   if ( b < 0x80 ) {
     // 1-byte encoded code point.
@@ -206,10 +204,10 @@ bool Text::UTF8_CharAdv(
 
   // We do not have a valid UTF-8 start byte, skip over any additional
   // continuation bytes.
-  while ( it != s.cend() ) {
-    b = *it;
+  while ( idx < s.size() ) {
+    b = s[ idx ];
     if ( (b & 0xC0) != 0x80 ) break;
-    ++it;
+    ++idx;
   }
 
   return false;
@@ -217,12 +215,12 @@ bool Text::UTF8_CharAdv(
 
 //------------------------------------------------------------------------------
 
-size_t Text::UTF8_CharNum( const std::string& s )
+size_t Text::UTF8_CharNum( std::string_view s )
 {
-  auto it = s.cbegin();
+  size_t idx = 0;
   size_t n = 0;
-  while ( it != s.cend() ) {
-    if ( Text::UTF8_CharAdv( s, it ) ) n++;
+  while ( idx < s.size() ) {
+    if ( Text::UTF8_CharAdv( s, idx ) ) n++;
   }
   return n;
 }
