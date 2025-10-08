@@ -95,7 +95,10 @@ std::string Object::TransSVG( void )
 {
   std::ostringstream oss;
 
-  if ( transform.translate_dx != 0 || transform.translate_dy != 0 || transform.rotate_theta != 0 ) {
+  if (
+    transform.translate_dx != 0 || transform.translate_dy != 0 ||
+    transform.rotate_theta != 0
+  ) {
     std::string s = "";
     oss << " transform=\"";
     if ( transform.translate_dx != 0 || transform.translate_dy != 0 ) {
@@ -113,7 +116,7 @@ std::string Object::TransSVG( void )
       oss
         << s
         << "rotate("
-        << (360 - transform.rotate_theta) << ' '
+        << U( 360.0f - transform.rotate_theta).SVG( false ) << ' '
         << U( +transform.rotate_point.x ).SVG( false ) << ' '
         << U( -transform.rotate_point.y ).SVG( false )
         << ')';

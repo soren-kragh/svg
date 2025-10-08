@@ -52,7 +52,7 @@ public:
   U translate_dx;
   U translate_dy;
 
-  int     rotate_theta;
+  float   rotate_theta;
   bool    rotate_anchor_defined;
   AnchorX rotate_anchor_x;
   AnchorY rotate_anchor_y;
