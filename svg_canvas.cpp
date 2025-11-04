@@ -89,7 +89,7 @@ std::string Canvas::GenSVG( U margin, std::string_view attr )
   }
   oss << '>' << "\n";
 
-  indent.resize( indent.size() + 2, ' ' );
+  if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
 
   if ( !Background()->IsClear() ) {
     Rect* rect = new Rect( boundary_box.min, boundary_box.max );
@@ -100,7 +100,7 @@ std::string Canvas::GenSVG( U margin, std::string_view attr )
   top_group->Prune();
   top_group->GenSVG( oss, indent );
 
-  indent.resize( indent.size() - 2 );
+  if ( settings.indent ) indent.resize( indent.size() - 2 );
 
   oss << "</svg>" << "\n";
 

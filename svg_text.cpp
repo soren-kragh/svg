@@ -120,6 +120,8 @@ void Text::GenSVG(
     << indent << "<g text-anchor=\"middle\""
     << Attr()->SVG( true ) << '>' << '\n';
 
+  if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
+
   size_t cidx = 0;
   while ( cidx < str.size() ) {
     size_t oidx = cidx;
@@ -145,13 +147,15 @@ void Text::GenSVG(
         }
       }
       oss
-        << indent << "  <text"
+        << indent << "<text"
         << " x=" << U( +x ).SVG()
         << " y=" << U( -y ).SVG()
         << '>' << s << "</text>" << '\n';
       x += w;
     }
   }
+
+  if ( settings.indent ) indent.resize( indent.size() - 2 );
 
   oss << indent << "</g>" << '\n';
 }

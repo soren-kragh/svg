@@ -146,13 +146,13 @@ void Group::GenSVG(
 {
   oss << indent << "<g" << Attr()->SVG() << ">" << "\n";
 
-  indent.resize( indent.size() + 2, ' ' );
+  if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
 
   for ( auto object : objects ) {
     object->GenSVG( oss, indent );
   }
 
-  indent.resize( indent.size() - 2 );
+  if ( settings.indent ) indent.resize( indent.size() - 2 );
 
   oss << indent << "</g>" << "\n";
 }
