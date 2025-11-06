@@ -139,6 +139,20 @@ Attributes* Attributes::SetTextZeroToO( bool zero_to_o )
 
 void Attributes::Collect( Attributes& final_attr )
 {
+  auto do_color = [&]( Color& final_col, const Color& col )
+    {
+      if ( !final_col.IsDefined() && col.IsDefined() ) {
+        final_col.col1 = col.col1;
+        final_col.col2 = col.col2;
+        final_col.grad = col.grad;
+      }
+      if ( !final_col.opacity_defined && col.opacity_defined ) {
+        final_col.opacity_defined = true;
+        final_col.opacity         = col.opacity;
+      }
+      return;
+    };
+
   if ( !final_attr.line_width_defined && line_width_defined ) {
     final_attr.SetLineWidth( line_width );
   }
@@ -151,27 +165,8 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.line_join_defined && line_join_defined ) {
     final_attr.SetLineJoin( line_join );
   }
-  if ( !final_attr.line_color.rgb_defined && line_color.rgb_defined ) {
-    if ( line_color.rgb_none ) {
-      final_attr.line_color.Clear();
-    } else {
-      final_attr.line_color.Set( line_color.r, line_color.g, line_color.b );
-    }
-  }
-  if ( !final_attr.line_color.opacity_defined && line_color.opacity_defined ) {
-    final_attr.line_color.SetOpacity( line_color.opacity );
-  }
-
-  if ( !final_attr.fill_color.rgb_defined && fill_color.rgb_defined ) {
-    if ( fill_color.rgb_none ) {
-      final_attr.fill_color.Clear();
-    } else {
-      final_attr.fill_color.Set( fill_color.r, fill_color.g, fill_color.b );
-    }
-  }
-  if ( !final_attr.fill_color.opacity_defined && fill_color.opacity_defined ) {
-    final_attr.fill_color.SetOpacity( fill_color.opacity );
-  }
+  do_color( final_attr.line_color, line_color );
+  do_color( final_attr.fill_color, fill_color );
 
   if ( !final_attr.text_font.family_defined && text_font.family_defined ) {
     final_attr.text_font.SetFamily( text_font.family );
@@ -214,28 +209,8 @@ void Attributes::Collect( Attributes& final_attr )
   if ( !final_attr.text_zero_to_o_defined && text_zero_to_o_defined ) {
     final_attr.SetTextZeroToO( text_zero_to_o );
   }
-  if ( !final_attr.text_outline_color.rgb_defined && text_outline_color.rgb_defined ) {
-    if ( text_outline_color.rgb_none ) {
-      final_attr.text_outline_color.Clear();
-    } else {
-      final_attr.text_outline_color.Set(
-        text_outline_color.r, text_outline_color.g, text_outline_color.b
-      );
-    }
-  }
-  if ( !final_attr.text_outline_color.opacity_defined && text_outline_color.opacity_defined ) {
-    final_attr.text_outline_color.SetOpacity( text_outline_color.opacity );
-  }
-  if ( !final_attr.text_color.rgb_defined && text_color.rgb_defined ) {
-    if ( text_color.rgb_none ) {
-      final_attr.text_color.Clear();
-    } else {
-      final_attr.text_color.Set( text_color.r, text_color.g, text_color.b );
-    }
-  }
-  if ( !final_attr.text_color.opacity_defined && text_color.opacity_defined ) {
-    final_attr.text_color.SetOpacity( text_color.opacity );
-  }
+  do_color( final_attr.text_outline_color, text_outline_color );
+  do_color( final_attr.text_color, text_color );
 
   if ( object->parent_group != nullptr ) {
     object->parent_group->Attr()->Collect( final_attr );
@@ -256,8 +231,7 @@ std::string Attributes::SVG( bool text )
     bool has_outline =
       final_attr.text_outline_width_defined &&
       final_attr.text_outline_width > 0 &&
-      final_attr.text_outline_color.rgb_defined &&
-      !final_attr.text_outline_color.rgb_none;
+      !final_attr.text_outline_color.IsClear();
     if ( has_outline ) {
       oss << " stroke-width=" << final_attr.text_outline_width.SVG();
       oss << " stroke-dasharray=\"none\"";

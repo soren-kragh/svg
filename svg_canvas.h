@@ -21,6 +21,8 @@
 #include <svg_ellipse.h>
 #include <svg_text.h>
 
+#include <unordered_map>
+
 namespace SVG {
 
 class Canvas
@@ -39,6 +41,20 @@ public:
   std::string GenSVG( U margin = 0, std::string_view attr = "" );
 
 private:
+
+  std::unordered_map< std::string, uint32_t > grad_map;
+
+  uint32_t grad_id = 0;
+
+  void GenDefObject(
+    std::ostringstream& oss, std::string& indent, Object* obj
+  );
+  void GenDefsGroup(
+    std::ostringstream& oss, std::string& indent, Group* g
+  );
+  void GenDefs(
+   std::ostringstream& oss, std::string& indent
+  );
 
   Color background;
 

@@ -59,8 +59,105 @@ Color* Canvas::Background( void )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void Canvas::GenDefObject(
+  std::ostringstream& oss, std::string& indent, Object* obj
+)
+{
+  auto gen_stop =
+    [&]( std::ostringstream& my_oss, float stop_ofs, Color::col_t& col )
+    {
+      my_oss
+        << indent
+        << "<stop offset=\"" << stop_ofs << '"'
+        << col.StopOffsetSVG()
+        << "/>\n";
+      return;
+    };
+
+  auto gen_def = [&]( Color* color )
+    {
+      if ( color->IsGradient() ) {
+        if ( grad_id == 0 ) {
+          oss << indent << "<defs>" << "\n";
+          if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
+        }
+        U x1{ color->grad.x1 };
+        U x2{ color->grad.x2 };
+        U y1{ 1.0 - color->grad.y1 };
+        U y2{ 1.0 - color->grad.y2 };
+        std::string extra;
+        if ( color->grad.group ) {
+          auto bb = obj->GetNoTransBB();
+          x1 = +bb.min.x + (bb.max.x - bb.min.x) * color->grad.x1;
+          x2 = +bb.min.x + (bb.max.x - bb.min.x) * color->grad.x2;
+          y1 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y1;
+          y2 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y2;
+          extra = " gradientUnits=\"userSpaceOnUse\"";
+        }
+        std::ostringstream my_oss;
+        my_oss
+          << " x1=" << x1.SVG()
+          << " y1=" << y1.SVG()
+          << " x2=" << x2.SVG()
+          << " y2=" << y2.SVG()
+          << extra
+          << ">\n";
+        if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
+        gen_stop( my_oss, color->grad.stop1, color->col1 );
+        gen_stop( my_oss, color->grad.stop2, color->col2 );
+        if ( settings.indent ) indent.resize( indent.size() - 2 );
+        grad_id++;
+        auto [ it, inserted ] = grad_map.insert( { my_oss.str(), grad_id } );
+        if ( inserted ) {
+          oss
+            << indent << "<linearGradient id=\"grad" << grad_id << '"'
+            << it->first
+            << indent << "</linearGradient>" << '\n';
+          color->grad.id = grad_id;
+        } else {
+          grad_id--;
+          color->grad.id = it->second;
+        }
+      }
+      return;
+    };
+
+  gen_def( obj->Attr()->LineColor() );
+  gen_def( obj->Attr()->FillColor() );
+  gen_def( obj->Attr()->TextOutlineColor() );
+  gen_def( obj->Attr()->TextColor() );
+}
+
+void Canvas::GenDefsGroup(
+  std::ostringstream& oss, std::string& indent, Group* g
+)
+{
+  GenDefObject( oss, indent, g );
+  for ( auto* object : g->objects ) {
+    if ( auto* group = dynamic_cast< Group* >( object ) ) {
+      GenDefsGroup( oss, indent, group );
+    } else {
+      GenDefObject( oss, indent, object );
+    }
+  }
+}
+
+void Canvas::GenDefs( std::ostringstream& oss, std::string& indent )
+{
+  grad_id = 0;
+  GenDefsGroup( oss, indent, top_group );
+  if ( grad_id > 0 ) {
+    if ( settings.indent ) indent.resize( indent.size() - 2 );
+    oss << indent << "</defs>" << "\n";
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 std::string Canvas::GenSVG( U margin, std::string_view attr )
 {
+  top_group->Prune();
+
   std::ostringstream oss;
   std::string indent;
   BoundaryBox boundary_box = top_group->GetBB();
@@ -91,13 +188,14 @@ std::string Canvas::GenSVG( U margin, std::string_view attr )
 
   if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
 
+  GenDefs( oss, indent );
+
   if ( !Background()->IsClear() ) {
     Rect* rect = new Rect( boundary_box.min, boundary_box.max );
     rect->Attr()->FillColor()->Set( &background );
     rect->Attr()->LineColor()->Clear();
     rect->GenSVG( oss, indent );
   }
-  top_group->Prune();
   top_group->GenSVG( oss, indent );
 
   if ( settings.indent ) indent.resize( indent.size() - 2 );

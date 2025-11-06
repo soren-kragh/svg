@@ -62,6 +62,10 @@ private:
     std::vector< Object* >& obj_path, size_t obj_idx
   ) override;
 
+  void UpdateNoTransBB(
+    BoundaryBox& boundary_box, std::vector< Transform >& transforms
+  ) override;
+
   void GenSVG(
     std::ostringstream& oss,
     std::string& indent

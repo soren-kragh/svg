@@ -18,13 +18,7 @@
 
 using namespace SVG;
 
-///////////////////////////////////////////////////////////////////////////////
-
-struct RGB {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-};
+////////////////////////////////////////////////////////////////////////////////
 
 Color::Color( void )
 {
@@ -55,16 +49,23 @@ Color::Color( Color* color )
 
 Color* Color::Set( uint8_t r, uint8_t g, uint8_t b )
 {
-  this->r = r;
-  this->g = g;
-  this->b = b;
-  rgb_defined = true;
-  rgb_none = false;
+  col1.r = r;
+  col1.g = g;
+  col1.b = b;
+  col1.rgb_defined = true;
+  col1.rgb_none = false;
+  col2 = {};
+  grad = {};
   return this;
 }
 
 Color* Color::Set( ColorName color, float lighten )
 {
+  struct RGB {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+  };
   static std::map< ColorName, RGB > color2rgb = {
     { ColorName::black               , { 0x00, 0x00, 0x00 } },
     { ColorName::navy                , { 0x00, 0x00, 0x80 } },
@@ -388,13 +389,37 @@ Color* Color::Set( Color* color )
 
 Color* Color::Set( Color* color1, Color* color2, float f )
 {
-  this->Undef();
-  if ( !color1->IsClear() && !color2->IsClear() ) {
-    this->Set(
-      color1->r * (1 - f) + color2->r * f,
-      color1->g * (1 - f) + color2->g * f,
-      color1->b * (1 - f) + color2->b * f
+  Undef();
+  if ( color1->col1.rgb_defined && color2->col1.rgb_defined ) {
+    Set(
+      color1->col1.r * (1 - f) + color2->col1.r * f,
+      color1->col1.g * (1 - f) + color2->col1.g * f,
+      color1->col1.b * (1 - f) + color2->col1.b * f
     );
+  }
+  return this;
+}
+
+Color* Color::SetGradient(
+  Color* stop_color1, Color* stop_color2,
+  float x1, float y1, float x2, float y2,
+  float stop1, float stop2,
+  bool group
+)
+{
+  Undef();
+  if ( stop_color1->IsDefined() && stop_color2->IsDefined() ) {
+    col1 = stop_color1->col1;
+    col2 = stop_color2->col1;
+    if ( stop_color1->opacity_defined ) col1.opacity = stop_color1->opacity;
+    if ( stop_color2->opacity_defined ) col2.opacity = stop_color2->opacity;
+    grad.x1    = x1;
+    grad.y1    = y1;
+    grad.x2    = x2;
+    grad.y2    = y2;
+    grad.stop1 = stop1;
+    grad.stop2 = stop2;
+    grad.group = group;
   }
   return this;
 }
@@ -404,37 +429,52 @@ Color* Color::SetOpacity( float opacity )
   if ( opacity < 0.0 ) opacity = 0.0;
   if ( opacity > 1.0 ) opacity = 1.0;
   this->opacity = opacity;
-  opacity_defined = true;
+  this->opacity_defined = true;
   return this;
 }
 
 Color* Color::Lighten( float f )
 {
   if ( f < 0 ) {
-    r *= 1 + f;
-    g *= 1 + f;
-    b *= 1 + f;
+    col1.r *= 1 + f;
+    col1.g *= 1 + f;
+    col1.b *= 1 + f;
   } else {
-    r += (0xFF - r) * f;
-    g += (0xFF - g) * f;
-    b += (0xFF - b) * f;
+    col1.r += (0xFF - col1.r) * f;
+    col1.g += (0xFF - col1.g) * f;
+    col1.b += (0xFF - col1.b) * f;
   }
+
+  if ( f < 0 ) {
+    col2.r *= 1 + f;
+    col2.g *= 1 + f;
+    col2.b *= 1 + f;
+  } else {
+    col2.r += (0xFF - col2.r) * f;
+    col2.g += (0xFF - col2.g) * f;
+    col2.b += (0xFF - col2.b) * f;
+  }
+
   return this;
 }
 
-Color* Color::Darken( float f )
+Color* Color::Opacify( float f )
 {
-  Lighten( -f );
+  if ( !opacity_defined ) opacity = 1.0;
+  if ( f < 0 ) {
+    opacity *= 1 + f;
+  } else {
+    opacity += (1 - opacity) * f;
+  }
+  opacity_defined = true;
   return this;
 }
 
 Color* Color::Undef( void )
 {
-  rgb_defined = false;
-  rgb_none = true;
-  r = 0;
-  g = 0;
-  b = 0;
+  col1 = {};
+  col2 = {};
+  grad = {};
   opacity_defined = false;
   opacity = 1.0;
   return this;
@@ -442,51 +482,84 @@ Color* Color::Undef( void )
 
 Color* Color::Clear( void )
 {
-  rgb_defined = true;
-  rgb_none = true;
-  opacity_defined = false;
+  Undef();
+  col1.rgb_defined = true;
   return this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+std::string Color::col_t::StopOffsetSVG()
+{
+  std::ostringstream oss;
+  if ( rgb_defined && !rgb_none ) {
+    oss
+      << " stop-color="
+      << "\"#"
+      << std::hex << std::setfill( '0' ) << std::uppercase
+      << std::setw( 2 ) << (0xFF & r)
+      << std::setw( 2 ) << (0xFF & g)
+      << std::setw( 2 ) << (0xFF & b)
+      << '"';
+    if ( opacity < 1.0 ) {
+      oss
+        << " stop-opacity=\""
+        << std::dec << std::setprecision( 3 ) << opacity << '"';
+    }
+  }
+  return oss.str();
 }
 
 std::string Color::SVG( std::string_view name )
 {
   std::ostringstream oss;
-  if ( rgb_defined ) {
-    if ( !name.empty() ) {
-      oss << ' ' << name << '=';
-    }
-    if ( rgb_none ) {
-      oss << "\"none\"";
+  if ( IsDefined() ) {
+    oss << ' ' << name << '=';
+    if ( grad.id > 0 ) {
+      oss << "\"url(#grad" << grad.id << ")\"";
     } else {
-      oss
-        << "\"#"
-        << std::hex << std::setfill( '0' ) << std::uppercase
-        << std::setw( 2 ) << (0xFF & r)
-        << std::setw( 2 ) << (0xFF & g)
-        << std::setw( 2 ) << (0xFF & b)
-        << '"';
+      oss << SVG();
     }
   }
-  if ( !name.empty() && opacity_defined && !(rgb_defined && rgb_none) ) {
+  if ( opacity_defined && !(col1.rgb_defined && col1.rgb_none) ) {
     oss
-      << std::dec
       << ' ' << name << "-opacity=\""
-      << std::setprecision( 3 ) << opacity << '"';
+      << std::dec << std::setprecision( 3 ) << opacity << '"';
   }
   return oss.str();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+std::string Color::SVG()
+{
+  std::ostringstream oss;
+  if ( col1.rgb_none ) {
+    oss << "\"none\"";
+  } else {
+    oss
+      << "\"#"
+      << std::hex << std::setfill( '0' ) << std::uppercase
+      << std::setw( 2 ) << (0xFF & col1.r)
+      << std::setw( 2 ) << (0xFF & col1.g)
+      << std::setw( 2 ) << (0xFF & col1.b)
+      << '"';
+  }
+  return oss.str();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 float Color::Diff( Color* color1, Color* color2 )
 {
   if ( color1->IsClear() || color2->IsClear() ) return 0.0;
 
-  int delta_r = static_cast<int>( color1->r ) - static_cast<int>( color2->r );
-  int delta_g = static_cast<int>( color1->g ) - static_cast<int>( color2->g );
-  int delta_b = static_cast<int>( color1->b ) - static_cast<int>( color2->b );
+  int delta_r =
+    static_cast<int>( color1->col1.r ) - static_cast<int>( color2->col1.r );
+  int delta_g =
+    static_cast<int>( color1->col1.g ) - static_cast<int>( color2->col1.g );
+  int delta_b =
+    static_cast<int>( color1->col1.b ) - static_cast<int>( color2->col1.b );
 
-  float r_mean = (static_cast<float>( color1->r ) + color2->r) / 2.0;
+  float r_mean = (static_cast<float>( color1->col1.r ) + color2->col1.r) / 2.0;
 
   float term_r = (2.0 + r_mean / 256.0) * delta_r * delta_r;
   float term_g = 4.0 * delta_g * delta_g;
@@ -500,24 +573,35 @@ float Color::Diff( Color* color1, Color* color2 )
   return (result > 1.0) ? 1.0 : (result < 0.0) ? 0.0 : result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 bool Color::operator==( const Color& other ) const {
-  if ( rgb_defined != other.rgb_defined ) return false;
   if ( opacity_defined != other.opacity_defined ) return false;
+  if ( opacity_defined && opacity != other.opacity ) return false;
 
-  if ( rgb_defined ) {
-    if ( rgb_none != other.rgb_none ) return false;
-    if ( !rgb_none && (r != other.r || g != other.g || b != other.b) ) {
+  if ( col1.rgb_defined != other.col1.rgb_defined ) return false;
+  if ( col1.rgb_defined ) {
+    if ( col1.rgb_none != other.col1.rgb_none ) return false;
+    if (
+      !col1.rgb_none &&
+      (col1.r != other.col1.r || col1.g != other.col1.g || col1.b != other.col1.b)
+    ) {
       return false;
     }
   }
 
-  if ( opacity_defined && opacity != other.opacity ) {
-    return false;
+  if ( col2.rgb_defined != other.col2.rgb_defined ) return false;
+  if ( col2.rgb_defined ) {
+    if ( col2.rgb_none != other.col2.rgb_none ) return false;
+    if (
+      !col2.rgb_none &&
+      (col2.r != other.col2.r || col2.g != other.col2.g || col2.b != other.col2.b)
+    ) {
+      return false;
+    }
   }
 
   return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

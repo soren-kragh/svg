@@ -45,9 +45,37 @@ public:
   // Set color between two colors.
   Color* Set( Color* color1, Color* color2, float f = 0.5 );
 
-  // opacity/transparency is a value in the range [0.0; 1.0]; default is
-  // 1.0/0.0. Note that opacity/transparency may not be supported by all
-  // viewers.
+  // Used to set a gradient on individual objects. The relative coordinates and
+  // stops are fractions, see SVG linearGradient for how this works. Note that
+  // each letter in a text is considered a separate object for gradients.
+  Color* SetGradient(
+    Color* stop_color1, Color* stop_color2,
+    float x1, float y1, float x2, float y2,
+    float stop1 = 0.0, float stop2 = 1.0,
+    bool group = false
+  );
+
+  // Like SetGradient() but the gradient is applied across all objects in a
+  // group and the paint vector is relative to the group bounding box. Note that
+  // the gradient effect is applied before any of the objects within the group
+  // are moved or rotated, therefore, applying SetGroupGradient() on a group
+  // with moved and/or rotated children will probably not result in the expected
+  // effect.
+  Color* SetGroupGradient(
+    Color* stop_color1, Color* stop_color2,
+    float x1, float y1, float x2, float y2,
+    float stop1 = 0.0, float stop2 = 1.0
+  )
+  {
+    return
+      SetGradient(
+        stop_color1, stop_color2, x1, y1, x2, y2, stop1, stop2, true
+      );
+  }
+
+  // The opacity/transparency is a value in the range [0.0; 1.0]. Setting a
+  // color deletes this attribute, so opacity/transparency should be set after
+  // the color has been set.
   Color* SetOpacity( float opacity );
   Color* SetTransparency( float transparency )
   {
@@ -55,28 +83,66 @@ public:
   }
 
   // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
-  // effect.
+  // effect. If this color is a gradient, both stop colors are affected.
   Color* Lighten( float f );
-  Color* Darken( float f );
+  Color* Darken( float f ) {
+    return Lighten( -f );
+  }
 
-  Color* Undef( void );
-  Color* Clear( void );
+  // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
+  // effect. If this color is a gradient, both stop colors are affected.
+  Color* Opacify( float f );
+  Color* Transparify( float f ) {
+    return Opacify( -f );
+  }
 
-  bool IsDefined( void ) { return rgb_defined; }
-  bool IsClear( void ) { return rgb_none; }
+  Color* Undef();
+  Color* Clear();
 
-  std::string SVG( std::string_view name = "" );
+  bool IsDefined() const { return col1.rgb_defined; }
+  bool IsClear() const { return col1.rgb_none; }
+  bool IsGradient() const
+  {
+    return
+      col1.rgb_defined && !col1.rgb_none &&
+      col2.rgb_defined && !col2.rgb_none;
+  }
+
+  std::string SVG( std::string_view name );
+  std::string SVG();
 
 private:
 
-  bool    rgb_defined;
-  bool    rgb_none;
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
+  struct col_t {
+    bool    rgb_defined = false;
+    bool    rgb_none = true;
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
 
-  bool  opacity_defined;
-  float opacity;
+    float opacity = 1.0;        // Used only for gradient.
+
+    std::string StopOffsetSVG();
+  };
+
+  col_t col1;
+  col_t col2;   // Used only if gradient.
+
+  struct grad_t {
+    float    x1    = 0.0;
+    float    y1    = 0.0;
+    float    x2    = 1.0;
+    float    y2    = 1.0;
+    float    stop1 = 0.0;
+    float    stop2 = 1.0;
+    uint32_t id    = 0;
+    bool     group = false;
+  };
+
+  grad_t grad;
+
+  bool  opacity_defined = false;
+  float opacity = 1.0;
 
 public:
 

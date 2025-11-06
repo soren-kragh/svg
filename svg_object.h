@@ -90,6 +90,9 @@ public:
 
 protected:
 
+  // Get boundary box without applying transforms.
+  BoundaryBox GetNoTransBB( void );
+
   virtual void UpdateBB(
     BoundaryBox& boundary_box,
     bool first, std::vector< Transform >& transforms
@@ -99,6 +102,10 @@ protected:
     BoundaryBox& boundary_box,
     bool first, std::vector< Transform >& transforms,
     std::vector< Object* >& obj_path, size_t obj_idx
+  );
+
+  virtual void UpdateNoTransBB(
+    BoundaryBox& boundary_box, std::vector< Transform >& transforms
   );
 
   virtual void GenSVG(
@@ -111,6 +118,8 @@ protected:
   Attributes attr = Attributes( this );
 
   Transform transform;
+
+  bool transform_enabled = true;
 
   Point TransformPoint(
     const std::vector< Transform >& transforms, Point p

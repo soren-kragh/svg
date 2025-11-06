@@ -164,6 +164,15 @@ void Group::UpdateAbsBB(
   }
 }
 
+void Group::UpdateNoTransBB(
+  BoundaryBox& boundary_box, std::vector< Transform >& transforms
+)
+{
+  for ( auto object : objects ) {
+    object->UpdateNoTransBB( boundary_box, transforms );
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void Group::GenSVG(

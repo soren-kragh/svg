@@ -348,12 +348,6 @@ void test08( Group* g )
 
 void test09( Group* g )
 {
-  auto print_bb = []( BoundaryBox bb )
-    {
-      SVG_DBG( bb.min.x << "    " << bb.min.y );
-      SVG_DBG( bb.max.x << "    " << bb.max.y );
-    };
-
   auto g0 = g;
   g0->Attr()->LineColor()->Clear();
   g0->Attr()->FillColor()->Clear();
@@ -361,22 +355,40 @@ void test09( Group* g )
   auto g1 = g0->AddNewGroup();
   auto g2 = g1->AddNewGroup();
 
+  auto r1 = g2->Add( new Rect( 100, 50, 200, 100 ) );
+  auto r2 = g2->Add( new Rect( 300, 50, 400, 200 ) );
+  auto r3 = g2->Add( new Rect( 500, 100, 600, 200 ) );
+  auto t1 = g2->Add( new Text( 0, 120, "Hello!" ) );
+  t1->Attr()->TextFont()->SetSize( 48 )->SetBold();
+  {
+    Color c1{ ColorName::skyblue };
+    Color c2{ ColorName::red };
+    t1->Attr()->TextColor()->SetGroupGradient( &c1, &c2, 1, 1, 0, 0, 0.5, 1 );
+  }
+
+  {
+    Color c1{ ColorName::yellow };
+    Color c2{ ColorName::blue };
+    g1->Attr()->FillColor()->SetGroupGradient( &c1, &c2, 0, 0, 0, 1 );
+  }
+
+  r1->Move( -45, 30 );
+  r1->Rotate( 40 );
+
+  r2->Move( 0, 300 );
+  r2->Rotate( -35 );
+
+  r3->Move( 95, 0 );
+  r3->Rotate( 120 );
+
+  t1->Rotate( -100 );
+  t1->Move( 200, -60 );
+
   g1->Move( 10, 10 );
   g1->Rotate( 30 );
 
-  auto r1 = g2->Add( new Rect( 100, 50, 200, 100 ) );
-  r1->Attr()->FillColor()->Set( ColorName::red );
-  auto r2 = g2->Add( new Rect( 300, 50, 400, 100 ) );
-  r2->Attr()->FillColor()->Set( ColorName::blue );
-
-  r2->Move( 0, 30 );
-  r2->Rotate( -10 );
-
   g2->Move( -60, -70 );
   g2->Rotate( 70 );
-
-  print_bb( r2->GetBB() );
-  print_bb( r2->GetAbsBB() );
 
   auto bb = r2->GetAbsBB();
   g0->Add( new Rect( bb.min, bb.max ) )->Attr()

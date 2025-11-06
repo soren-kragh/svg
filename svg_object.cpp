@@ -16,14 +16,14 @@
 
 using namespace SVG;
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 Object::Object( void )
 {
   parent_group = nullptr;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 Group* Object::ParentGroup( void )
 {
@@ -33,26 +33,28 @@ Group* Object::ParentGroup( void )
   return parent_group;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 Point Object::TransformPoint(
   const std::vector< Transform >& transforms, Point p
 )
 {
-  for ( auto it = transforms.rbegin(); it != transforms.rend(); ++it ) {
-    Point np = Point( it->translate_dx, it->translate_dy );
-    double radians = it->rotate_theta * (M_PI / 180.0);
-    double a = std::cos( radians );
-    double b = std::sin( radians );
-    Point rp = it->rotate_point;
-    np.x += rp.x + (p.x - rp.x) * a - (p.y - rp.y) * b;
-    np.y += rp.y + (p.x - rp.x) * b + (p.y - rp.y) * a;
-    p = np;
+  if ( transform_enabled ) {
+    for ( auto it = transforms.rbegin(); it != transforms.rend(); ++it ) {
+      Point np = Point( it->translate_dx, it->translate_dy );
+      double radians = it->rotate_theta * (M_PI / 180.0);
+      double a = std::cos( radians );
+      double b = std::sin( radians );
+      Point rp = it->rotate_point;
+      np.x += rp.x + (p.x - rp.x) * a - (p.y - rp.y) * b;
+      np.y += rp.y + (p.x - rp.x) * b + (p.y - rp.y) * a;
+      p = np;
+    }
   }
   return p;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 BoundaryBox Object::GetBB( void )
 {
@@ -61,6 +63,17 @@ BoundaryBox Object::GetBB( void )
   UpdateBB( bb, true, transforms );
   if ( !bb.Defined() ) {
     SVG_FATAL( "SVG::Object::GetBB: empty group" );
+  }
+  return bb;
+}
+
+BoundaryBox Object::GetNoTransBB( void )
+{
+  std::vector< Transform > transforms;
+  BoundaryBox bb;
+  UpdateNoTransBB( bb, transforms );
+  if ( !bb.Defined() ) {
+    SVG_FATAL( "SVG::Object::GetNoTransBB: empty group" );
   }
   return bb;
 }
@@ -88,6 +101,8 @@ BoundaryBox Object::GetAbsBB( void )
   return bb;
 }
 
+//------------------------------------------------------------------------------
+
 void Object::UpdateAbsBB(
   BoundaryBox& boundary_box,
   bool first, std::vector< Transform >& transforms,
@@ -98,7 +113,16 @@ void Object::UpdateAbsBB(
   UpdateBB( boundary_box, first, transforms );
 }
 
-///////////////////////////////////////////////////////////////////////////////
+void Object::UpdateNoTransBB(
+  BoundaryBox& boundary_box, std::vector< Transform >& transforms
+)
+{
+  transform_enabled = false;
+  UpdateBB( boundary_box, false, transforms );
+  transform_enabled = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 void Object::MoveTo(
   AnchorX anchor_x,
@@ -122,7 +146,7 @@ void Object::MoveTo(
   transform.translate_dy += y - p.y;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 std::string Object::TransSVG( void )
 {
@@ -161,4 +185,4 @@ std::string Object::TransSVG( void )
   return oss.str();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
