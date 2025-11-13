@@ -33,7 +33,7 @@ public:
   Object( void );
   virtual ~Object( void ) {}
 
-  Group* ParrentGroup( void );
+  Group* ParentGroup( void );
 
   Attributes* Attr( void ) { return &attr; }
 
@@ -81,9 +81,12 @@ public:
   // became empty itself.
   virtual bool Prune( void ) { return false; }
 
-  // GetBB() errors out when used on empty object as there are no defined
-  // coordinates.
+  // Return boundary box in parent group. GetBB() errors out when used on empty
+  // object as there are no defined coordinates.
   BoundaryBox GetBB( void );
+
+  // Like GetBB(), but returns the boundary box in absolute canvas coordinates.
+  BoundaryBox GetAbsBB( void );
 
 protected:
 
@@ -92,12 +95,18 @@ protected:
     bool first, std::vector< Transform >& transforms
   ) = 0;
 
+  virtual void UpdateAbsBB(
+    BoundaryBox& boundary_box,
+    bool first, std::vector< Transform >& transforms,
+    std::vector< Object* >& obj_path, size_t obj_idx
+  );
+
   virtual void GenSVG(
     std::ostringstream& oss,
     std::string& indent
   ) = 0;
 
-  Group* parrent_group;
+  Group* parent_group;
 
   Attributes attr = Attributes( this );
 

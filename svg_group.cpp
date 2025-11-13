@@ -35,10 +35,10 @@ Group::~Group( void )
 
 Object* Group::Add( Object* object )
 {
-  if ( object->parrent_group != nullptr ) {
+  if ( object->parent_group != nullptr ) {
     SVG_FATAL( "SVG::Group::Add: object cannot be added to a group more than once" );
   }
-  object->parrent_group = this;
+  object->parent_group = this;
   objects.push_back( object );
   last = object;
   return object;
@@ -133,6 +133,33 @@ void Group::UpdateBB(
     for ( auto object : objects ) {
       object->UpdateBB( boundary_box, false, transforms );
     }
+    transforms.pop_back();
+  }
+}
+
+void Group::UpdateAbsBB(
+  BoundaryBox& boundary_box,
+  bool first, std::vector< Transform >& transforms,
+  std::vector< Object* >& obj_path, size_t obj_idx
+)
+{
+  if ( obj_idx == 0 ) {
+    UpdateBB( boundary_box, first, transforms );
+  } else {
+    if ( first ) {
+      BoundaryBox bb;
+      for ( auto object : objects ) {
+        object->UpdateBB( bb, true, transforms );
+      }
+      if ( transform.rotate_anchor_defined ) {
+        transform.SetRotatePoint( bb );
+      }
+    }
+    obj_idx--;
+    transforms.push_back( transform );
+    obj_path[ obj_idx ]->UpdateAbsBB(
+      boundary_box, false, transforms, obj_path, obj_idx
+    );
     transforms.pop_back();
   }
 }

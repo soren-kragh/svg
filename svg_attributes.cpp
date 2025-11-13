@@ -237,8 +237,8 @@ void Attributes::Collect( Attributes& final_attr )
     final_attr.text_color.SetOpacity( text_color.opacity );
   }
 
-  if ( object->parrent_group != nullptr ) {
-    object->parrent_group->Attr()->Collect( final_attr );
+  if ( object->parent_group != nullptr ) {
+    object->parent_group->Attr()->Collect( final_attr );
   }
 }
 

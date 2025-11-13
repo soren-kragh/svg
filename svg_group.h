@@ -22,6 +22,7 @@ namespace SVG {
 class Group : public Object
 {
   friend class Canvas;
+  friend class Object;
 
 public:
 
@@ -54,6 +55,12 @@ private:
     BoundaryBox& boundary_box,
     bool first, std::vector< Transform >& transforms
   );
+
+  void UpdateAbsBB(
+    BoundaryBox& boundary_box,
+    bool first, std::vector< Transform >& transforms,
+    std::vector< Object* >& obj_path, size_t obj_idx
+  ) override;
 
   void GenSVG(
     std::ostringstream& oss,

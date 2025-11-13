@@ -20,17 +20,17 @@ using namespace SVG;
 
 Object::Object( void )
 {
-  parrent_group = nullptr;
+  parent_group = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Group* Object::ParrentGroup( void )
+Group* Object::ParentGroup( void )
 {
-  if ( parrent_group == nullptr ) {
-    SVG_FATAL( "SVG::Object::ParrentGroup: object has no parrent" );
+  if ( parent_group == nullptr ) {
+    SVG_FATAL( "SVG::Object::ParentGroup: object has no parent" );
   }
-  return parrent_group;
+  return parent_group;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,6 +63,39 @@ BoundaryBox Object::GetBB( void )
     SVG_FATAL( "SVG::Object::GetBB: empty group" );
   }
   return bb;
+}
+
+BoundaryBox Object::GetAbsBB( void )
+{
+  std::vector< Object* > obj_path;
+  auto obj = this;
+  while ( obj->parent_group ) {
+    obj_path.push_back( obj );
+    obj = obj->parent_group;
+  }
+  BoundaryBox bb;
+  std::vector< Transform > transforms;
+  if ( obj_path.empty() ) {
+    SVG_FATAL( "SVG::Object::GetAbsBB: detached object" );
+  } else {
+    if ( Group* g = dynamic_cast< Group* >( obj ) ) {
+      g->UpdateAbsBB( bb, true, transforms, obj_path, obj_path.size() );
+    }
+  }
+  if ( !bb.Defined() ) {
+    SVG_FATAL( "SVG::Object::GetAbsBB: empty group" );
+  }
+  return bb;
+}
+
+void Object::UpdateAbsBB(
+  BoundaryBox& boundary_box,
+  bool first, std::vector< Transform >& transforms,
+  [[maybe_unused]] std::vector< Object* >& obj_path,
+  [[maybe_unused]] size_t obj_idx
+)
+{
+  UpdateBB( boundary_box, first, transforms );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

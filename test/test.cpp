@@ -103,14 +103,14 @@ void test02( Group* g )
 
     bb = g->GetBB();
 
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
 
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
     g->Last()->Attr()->LineColor()->Set( ColorName::yellow );
 
     g->MoveTo( AnchorX::Min, AnchorY::Min, 0, 0 );
 
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
   }
 
   {
@@ -136,7 +136,7 @@ void test02( Group* g )
     g->MoveTo( AnchorX::Max, AnchorY::Min, -100, -200 );
     g->Rotate( -30, AnchorX::Max, AnchorY::Min );
 
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
 
     bb = g->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y ) );
@@ -144,7 +144,7 @@ void test02( Group* g )
 
     g->MoveTo( AnchorX::Min, AnchorY::Max, 100, -100 );
 
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
   }
 }
 
@@ -195,7 +195,7 @@ void test04( Group* g )
 //  g->Add( new Rect( 400 - 600, -300 - 600, 400 + 600, -300 + 600 ) );
 //  g->Last()->Rotate( 45, Start, End );
 
-  g = g->ParrentGroup();
+  g = g->ParentGroup();
 
   g->Rotate( -30 );
 
@@ -223,7 +223,7 @@ void test04( Group* g )
   g->Last()->Attr()->SetLineDash( 10 );
   g->Last()->Rotate( 45, AnchorX::Min, AnchorY::Max );
 
-  g = g->ParrentGroup();
+  g = g->ParentGroup();
 
   g->Rotate( -30 );
 
@@ -249,7 +249,7 @@ void test05( Group* g )
     g->Last()->Rotate( 20, AnchorX::Min, AnchorY::Min );
     BoundaryBox bb = g->Last()->GetBB();
     g->Add( new Rect( bb.min.x, bb.min.y, bb.max.x, bb.max.y, 50 ) );
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
   }
   g->Last()->Rotate( -20, AnchorX::Min, AnchorY::Min );
   BoundaryBox bb = g->Last()->GetBB();
@@ -305,7 +305,7 @@ void test06( Group* g )
     g->Last()->Attr()->SetTextAnchorX( AnchorX::Mid );
     g->Last()->Attr()->SetTextAnchorY( AnchorY::Max );
 
-    g = g->ParrentGroup();
+    g = g->ParentGroup();
   };
 
   test( +250, +250, 100, 150,   70 );
@@ -346,11 +346,51 @@ void test08( Group* g )
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void test09( Group* g )
+{
+  auto print_bb = []( BoundaryBox bb )
+    {
+      SVG_DBG( bb.min.x << "    " << bb.min.y );
+      SVG_DBG( bb.max.x << "    " << bb.max.y );
+    };
+
+  auto g0 = g;
+  g0->Attr()->LineColor()->Clear();
+  g0->Attr()->FillColor()->Clear();
+
+  auto g1 = g0->AddNewGroup();
+  auto g2 = g1->AddNewGroup();
+
+  g1->Move( 10, 10 );
+  g1->Rotate( 30 );
+
+  auto r1 = g2->Add( new Rect( 100, 50, 200, 100 ) );
+  r1->Attr()->FillColor()->Set( ColorName::red );
+  auto r2 = g2->Add( new Rect( 300, 50, 400, 100 ) );
+  r2->Attr()->FillColor()->Set( ColorName::blue );
+
+  r2->Move( 0, 30 );
+  r2->Rotate( -10 );
+
+  g2->Move( -60, -70 );
+  g2->Rotate( 70 );
+
+  print_bb( r2->GetBB() );
+  print_bb( r2->GetAbsBB() );
+
+  auto bb = r2->GetAbsBB();
+  g0->Add( new Rect( bb.min, bb.max ) )->Attr()
+    ->SetLineWidth( 3 )
+    ->LineColor()->Set( ColorName::black );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 int main()
 {
   Canvas* svg_canvas = new Canvas();
 
-  test01( svg_canvas->TopGroup()->AddNewGroup() );
+  test09( svg_canvas->TopGroup()->AddNewGroup() );
 
   svg_canvas->Background()->Set( ColorName::orange, 0.95 );
 
