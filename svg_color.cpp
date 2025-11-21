@@ -424,6 +424,17 @@ Color* Color::SetGradient(
   return this;
 }
 
+Color* Color::SetGradientDir(
+  float x1, float y1, float x2, float y2
+)
+{
+  grad.x1 = x1;
+  grad.y1 = y1;
+  grad.x2 = x2;
+  grad.y2 = y2;
+  return this;
+}
+
 Color* Color::SetOpacity( float opacity )
 {
   if ( opacity < 0.0 ) opacity = 0.0;

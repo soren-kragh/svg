@@ -55,6 +55,11 @@ public:
     bool group = false
   );
 
+  // Redefine gradient direction.
+  Color* SetGradientDir(
+    float x1, float y1, float x2, float y2
+  );
+
   // Like SetGradient() but the gradient is applied across all objects in a
   // group and the paint vector is relative to the group bounding box. Note that
   // the gradient effect is applied before any of the objects within the group
