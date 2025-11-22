@@ -142,9 +142,9 @@ void Attributes::Collect( Attributes& final_attr )
   auto do_color = [&]( Color& final_col, const Color& col )
     {
       if ( !final_col.IsDefined() && col.IsDefined() ) {
-        final_col.col1 = col.col1;
-        final_col.col2 = col.col2;
-        final_col.grad = col.grad;
+        final_col.col      = col.col;
+        final_col.col_list = col.col_list;
+        final_col.grad     = col.grad;
       }
       if ( !final_col.opacity_defined && col.opacity_defined ) {
         final_col.opacity_defined = true;

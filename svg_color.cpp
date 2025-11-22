@@ -40,7 +40,7 @@ Color::Color( std::string_view color_name, float lighten ) : Color()
   Set( color_name, lighten );
 }
 
-Color::Color( Color* color )
+Color::Color( const Color* color )
 {
   Set( color );
 }
@@ -49,12 +49,15 @@ Color::Color( Color* color )
 
 Color* Color::Set( uint8_t r, uint8_t g, uint8_t b )
 {
-  col1.r = r;
-  col1.g = g;
-  col1.b = b;
-  col1.rgb_defined = true;
-  col1.rgb_none = false;
-  col2 = {};
+  col.rgb_defined = true;
+  col.rgb_none = false;
+  col.r = r;
+  col.g = g;
+  col.b = b;
+  col.stop_ofs_auto = true;
+  col.stop_ofs = 0.0f;
+  col.stop_opacity = 1.0f;
+  col_list.clear();
   grad = {};
   return this;
 }
@@ -381,47 +384,68 @@ Color* Color::Set( std::string_view color_name, float lighten )
   }
 }
 
-Color* Color::Set( Color* color )
+Color* Color::Set( const Color* color )
 {
   *this = *color;
   return this;
 }
 
-Color* Color::Set( Color* color1, Color* color2, float f )
+Color* Color::Set( const Color* color1, const Color* color2, float f )
 {
   Undef();
-  if ( color1->col1.rgb_defined && color2->col1.rgb_defined ) {
+  if ( color1->col.rgb_defined && color2->col.rgb_defined ) {
     Set(
-      color1->col1.r * (1 - f) + color2->col1.r * f,
-      color1->col1.g * (1 - f) + color2->col1.g * f,
-      color1->col1.b * (1 - f) + color2->col1.b * f
+      color1->col.r * (1 - f) + color2->col.r * f,
+      color1->col.g * (1 - f) + color2->col.g * f,
+      color1->col.b * (1 - f) + color2->col.b * f
     );
   }
   return this;
 }
 
-Color* Color::SetGradient(
-  Color* stop_color1, Color* stop_color2,
-  float x1, float y1, float x2, float y2,
-  float stop1, float stop2,
-  bool group
-)
+void Color::ComputeAutoStopOfs()
 {
-  Undef();
-  if ( stop_color1->IsDefined() && stop_color2->IsDefined() ) {
-    col1 = stop_color1->col1;
-    col2 = stop_color2->col1;
-    if ( stop_color1->opacity_defined ) col1.opacity = stop_color1->opacity;
-    if ( stop_color2->opacity_defined ) col2.opacity = stop_color2->opacity;
-    grad.x1    = x1;
-    grad.y1    = y1;
-    grad.x2    = x2;
-    grad.y2    = y2;
-    grad.stop1 = stop1;
-    grad.stop2 = stop2;
-    grad.group = group;
+  size_t i = 0;
+  for ( size_t j = 1; j < col_list.size(); j++ ) {
+    if ( !col_list[ j ].stop_ofs_auto || j == col_list.size() - 1 ) {
+      if ( col_list[ i ].stop_ofs_auto ) col_list[ i ].stop_ofs = 0.0f;
+      if ( col_list[ j ].stop_ofs_auto ) col_list[ j ].stop_ofs = 1.0f;
+      float d = 1.0f / (j - i);
+      for ( size_t k = i + 1; k < j; k++ ) {
+        col_list[ k ].stop_ofs =
+          col_list[ i ].stop_ofs +
+          (col_list[ j ].stop_ofs - col_list[ i ].stop_ofs) * (k - i) * d;
+      }
+      i = j;
+    }
+  }
+  col = {};
+  col.rgb_defined = true;
+  col.rgb_none = false;
+  col.r = col_list.back().r;
+  col.g = col_list.back().g;
+  col.b = col_list.back().b;
+}
+
+Color* Color::AddGradientStop( const Color* color, float stop_ofs )
+{
+  if ( !color->IsClear() ) {
+    col_t col{ color->col };
+    col.stop_ofs_auto = stop_ofs < 0.0f || stop_ofs > 1.0f;
+    col.stop_ofs = stop_ofs;
+    if ( color->opacity_defined ) col.stop_opacity = color->opacity;
+    col_list.emplace_back( col );
+    ComputeAutoStopOfs();
   }
   return this;
+}
+
+Color* Color::SetGradientDir(
+  float x1, float y1, float x2, float y2, bool group
+)
+{
+  grad.group = group;
+  return SetGradientDir( x1, y1, x2, y2 );
 }
 
 Color* Color::SetGradientDir(
@@ -432,6 +456,16 @@ Color* Color::SetGradientDir(
   grad.y1 = y1;
   grad.x2 = x2;
   grad.y2 = y2;
+  return this;
+}
+
+Color* Color::SetStopOfs( size_t i, float stop_ofs )
+{
+  if ( i < col_list.size() ) {
+    col_list[ i ].stop_ofs_auto = stop_ofs < 0.0f || stop_ofs > 1.0f;
+    col_list[ i ].stop_ofs = stop_ofs;
+    ComputeAutoStopOfs();
+  }
   return this;
 }
 
@@ -447,23 +481,25 @@ Color* Color::SetOpacity( float opacity )
 Color* Color::Lighten( float f )
 {
   if ( f < 0 ) {
-    col1.r *= 1 + f;
-    col1.g *= 1 + f;
-    col1.b *= 1 + f;
+    col.r *= 1 + f;
+    col.g *= 1 + f;
+    col.b *= 1 + f;
   } else {
-    col1.r += (0xFF - col1.r) * f;
-    col1.g += (0xFF - col1.g) * f;
-    col1.b += (0xFF - col1.b) * f;
+    col.r += (0xFF - col.r) * f;
+    col.g += (0xFF - col.g) * f;
+    col.b += (0xFF - col.b) * f;
   }
 
-  if ( f < 0 ) {
-    col2.r *= 1 + f;
-    col2.g *= 1 + f;
-    col2.b *= 1 + f;
-  } else {
-    col2.r += (0xFF - col2.r) * f;
-    col2.g += (0xFF - col2.g) * f;
-    col2.b += (0xFF - col2.b) * f;
+  for ( auto& c : col_list ) {
+    if ( f < 0 ) {
+      c.r *= 1 + f;
+      c.g *= 1 + f;
+      c.b *= 1 + f;
+    } else {
+      c.r += (0xFF - c.r) * f;
+      c.g += (0xFF - c.g) * f;
+      c.b += (0xFF - c.b) * f;
+    }
   }
 
   return this;
@@ -483,8 +519,8 @@ Color* Color::Opacify( float f )
 
 Color* Color::Undef( void )
 {
-  col1 = {};
-  col2 = {};
+  col = {};
+  col_list.clear();
   grad = {};
   opacity_defined = false;
   opacity = 1.0;
@@ -494,7 +530,7 @@ Color* Color::Undef( void )
 Color* Color::Clear( void )
 {
   Undef();
-  col1.rgb_defined = true;
+  col.rgb_defined = true;
   return this;
 }
 
@@ -505,6 +541,7 @@ std::string Color::col_t::StopOffsetSVG()
   std::ostringstream oss;
   if ( rgb_defined && !rgb_none ) {
     oss
+      << " offset=\"" << stop_ofs << '"'
       << " stop-color="
       << "\"#"
       << std::hex << std::setfill( '0' ) << std::uppercase
@@ -512,10 +549,10 @@ std::string Color::col_t::StopOffsetSVG()
       << std::setw( 2 ) << (0xFF & g)
       << std::setw( 2 ) << (0xFF & b)
       << '"';
-    if ( opacity < 1.0 ) {
+    if ( stop_opacity < 1.0 ) {
       oss
         << " stop-opacity=\""
-        << std::dec << std::setprecision( 3 ) << opacity << '"';
+        << std::dec << std::setprecision( 3 ) << stop_opacity << '"';
     }
   }
   return oss.str();
@@ -532,7 +569,7 @@ std::string Color::SVG( std::string_view name )
       oss << SVG();
     }
   }
-  if ( opacity_defined && !(col1.rgb_defined && col1.rgb_none) ) {
+  if ( opacity_defined && !(col.rgb_defined && col.rgb_none) ) {
     oss
       << ' ' << name << "-opacity=\""
       << std::dec << std::setprecision( 3 ) << opacity << '"';
@@ -543,15 +580,15 @@ std::string Color::SVG( std::string_view name )
 std::string Color::SVG()
 {
   std::ostringstream oss;
-  if ( col1.rgb_none ) {
+  if ( col.rgb_none ) {
     oss << "\"none\"";
   } else {
     oss
       << "\"#"
       << std::hex << std::setfill( '0' ) << std::uppercase
-      << std::setw( 2 ) << (0xFF & col1.r)
-      << std::setw( 2 ) << (0xFF & col1.g)
-      << std::setw( 2 ) << (0xFF & col1.b)
+      << std::setw( 2 ) << (0xFF & col.r)
+      << std::setw( 2 ) << (0xFF & col.g)
+      << std::setw( 2 ) << (0xFF & col.b)
       << '"';
   }
   return oss.str();
@@ -559,18 +596,18 @@ std::string Color::SVG()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-float Color::Diff( Color* color1, Color* color2 )
+float Color::Diff( const Color* color1, const Color* color2 )
 {
   if ( color1->IsClear() || color2->IsClear() ) return 0.0;
 
   int delta_r =
-    static_cast<int>( color1->col1.r ) - static_cast<int>( color2->col1.r );
+    static_cast<int>( color1->col.r ) - static_cast<int>( color2->col.r );
   int delta_g =
-    static_cast<int>( color1->col1.g ) - static_cast<int>( color2->col1.g );
+    static_cast<int>( color1->col.g ) - static_cast<int>( color2->col.g );
   int delta_b =
-    static_cast<int>( color1->col1.b ) - static_cast<int>( color2->col1.b );
+    static_cast<int>( color1->col.b ) - static_cast<int>( color2->col.b );
 
-  float r_mean = (static_cast<float>( color1->col1.r ) + color2->col1.r) / 2.0;
+  float r_mean = (static_cast<float>( color1->col.r ) + color2->col.r) / 2.0;
 
   float term_r = (2.0 + r_mean / 256.0) * delta_r * delta_r;
   float term_g = 4.0 * delta_g * delta_g;
@@ -586,32 +623,34 @@ float Color::Diff( Color* color1, Color* color2 )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool Color::operator==( const Color& other ) const {
+bool Color::col_t::operator==( const Color::col_t& other ) const
+{
+  if ( rgb_defined != other.rgb_defined ) return false;
+   if ( rgb_defined ) {
+    if ( rgb_none != other.rgb_none ) return false;
+    if ( !rgb_none ) {
+      if ( r != other.r || g != other.g || b != other.b ) return false;
+      if ( stop_ofs_auto != other.stop_ofs_auto ) return false;
+      if ( !stop_ofs_auto && stop_ofs != other.stop_ofs ) return false;
+      if ( stop_opacity != other.stop_opacity ) return false;
+    }
+  }
+  return true;
+}
+
+bool Color::operator==( const Color& other ) const
+{
+  if ( col != other.col ) return false;
+  if ( IsGradient() ) {
+    if ( col_list   != other.col_list   ) return false;
+    if ( grad.x1    != other.grad.x1    ) return false;
+    if ( grad.y1    != other.grad.y1    ) return false;
+    if ( grad.x2    != other.grad.x2    ) return false;
+    if ( grad.y2    != other.grad.y2    ) return false;
+    if ( grad.group != other.grad.group ) return false;
+  }
   if ( opacity_defined != other.opacity_defined ) return false;
   if ( opacity_defined && opacity != other.opacity ) return false;
-
-  if ( col1.rgb_defined != other.col1.rgb_defined ) return false;
-  if ( col1.rgb_defined ) {
-    if ( col1.rgb_none != other.col1.rgb_none ) return false;
-    if (
-      !col1.rgb_none &&
-      (col1.r != other.col1.r || col1.g != other.col1.g || col1.b != other.col1.b)
-    ) {
-      return false;
-    }
-  }
-
-  if ( col2.rgb_defined != other.col2.rgb_defined ) return false;
-  if ( col2.rgb_defined ) {
-    if ( col2.rgb_none != other.col2.rgb_none ) return false;
-    if (
-      !col2.rgb_none &&
-      (col2.r != other.col2.r || col2.g != other.col2.g || col2.b != other.col2.b)
-    ) {
-      return false;
-    }
-  }
-
   return true;
 }
 

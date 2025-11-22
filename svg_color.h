@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <svg_common.h>
 
 namespace SVG {
@@ -28,7 +30,7 @@ public:
   Color( uint8_t r, uint8_t g, uint8_t b );
   Color( ColorName color, float lighten = 0.0 );
   Color( std::string_view color_name, float lighten = 0.0 );
-  Color( Color* color );
+  Color( const Color* color );
 
   Color* Set( uint8_t r, uint8_t g, uint8_t b );
 
@@ -40,43 +42,39 @@ public:
   // color name is given.
   Color* Set( std::string_view color_name, float lighten = 0.0 );
 
-  Color* Set( Color* color );
+  Color* Set( const Color* color );
 
   // Set color between two colors.
-  Color* Set( Color* color1, Color* color2, float f = 0.5 );
+  Color* Set( const Color* color1, const Color* color2, float f = 0.5 );
 
-  // Used to set a gradient on individual objects. The relative coordinates and
-  // stops are fractions, see SVG linearGradient for how this works. Note that
-  // each letter in a text is considered a separate object for gradients.
-  Color* SetGradient(
-    Color* stop_color1, Color* stop_color2,
-    float x1, float y1, float x2, float y2,
-    float stop1 = 0.0, float stop2 = 1.0,
-    bool group = false
-  );
-
-  // Redefine gradient direction.
-  Color* SetGradientDir(
-    float x1, float y1, float x2, float y2
-  );
-
-  // Like SetGradient() but the gradient is applied across all objects in a
-  // group and the paint vector is relative to the group bounding box. Note that
-  // the gradient effect is applied before any of the objects within the group
-  // are moved or rotated, therefore, applying SetGroupGradient() on a group
-  // with moved and/or rotated children will probably not result in the expected
-  // effect.
-  Color* SetGroupGradient(
-    Color* stop_color1, Color* stop_color2,
-    float x1, float y1, float x2, float y2,
-    float stop1 = 0.0, float stop2 = 1.0
-  )
+  // Used to add gradient stop points (see SVG linearGradient for how this
+  // works), if the stop offset is outside the allowed [0.0;1.0] range it is
+  // automatically assigned an equidistant value. If no color is given the
+  // current color set by Set() is used.
+  Color* AddGradientStop( const Color* color, float stop_ofs = -1.0 );
+  Color* AddGradientStop( const Color& color, float stop_ofs = -1.0 )
   {
-    return
-      SetGradient(
-        stop_color1, stop_color2, x1, y1, x2, y2, stop1, stop2, true
-      );
+    return AddGradientStop( &color, stop_ofs );
   }
+  Color* AddGradientStop( float stop_ofs = -1.0 )
+  {
+    return AddGradientStop( this, stop_ofs );
+  }
+
+  // Define or redefine gradient direction; the values are relative meaning that
+  // 0.0 corresponds to the min object coordinate and 1.0 corresponds to the max
+  // object coordinate. The group flag indicates if the gradient is applied
+  // across the entire group, if not, the gradient is applied individually on
+  // each leaf object within the hierarchy. Note that the group gradient effect
+  // is applied before any of the objects within the group are moved or rotated,
+  // therefore, setting the group flag on a group with moved and/or rotated
+  // children will probably not result in the expected effect, unless you know
+  // exactly what you're doing.
+  Color* SetGradientDir( float x1, float y1, float x2, float y2, bool group );
+  Color* SetGradientDir( float x1, float y1, float x2, float y2 );
+
+  // Define or redefine the stop offset for gradient color number i.
+  Color* SetStopOfs( size_t i, float stop_ofs );
 
   // The opacity/transparency is a value in the range [0.0; 1.0]. Setting a
   // color deletes this attribute, so opacity/transparency should be set after
@@ -104,19 +102,19 @@ public:
   Color* Undef();
   Color* Clear();
 
-  bool IsDefined() const { return col1.rgb_defined; }
-  bool IsClear() const { return col1.rgb_none; }
+  bool IsDefined() const { return col.rgb_defined; }
+  bool IsClear() const { return col.rgb_none; }
   bool IsGradient() const
   {
-    return
-      col1.rgb_defined && !col1.rgb_none &&
-      col2.rgb_defined && !col2.rgb_none;
+    return !col_list.empty();
   }
 
   std::string SVG( std::string_view name );
   std::string SVG();
 
 private:
+
+  void ComputeAutoStopOfs();
 
   struct col_t {
     bool    rgb_defined = false;
@@ -125,36 +123,48 @@ private:
     uint8_t g = 0;
     uint8_t b = 0;
 
-    float opacity = 1.0;        // Used only for gradient.
+    // Used only for gradient.
+    bool  stop_ofs_auto = true;
+    float stop_ofs = 0.0f;
+    float stop_opacity = 1.0f;
 
     std::string StopOffsetSVG();
+
+    bool operator==( const col_t& other ) const;
+    bool operator!=( const col_t& other ) const
+    {
+      return !(*this == other);
+    }
   };
+  col_t col;
 
-  col_t col1;
-  col_t col2;   // Used only if gradient.
+  // Used only for gradient.
+  std::vector< col_t > col_list;
 
+  // Used only for gradient.
   struct grad_t {
-    float    x1    = 0.0;
-    float    y1    = 0.0;
-    float    x2    = 1.0;
-    float    y2    = 1.0;
-    float    stop1 = 0.0;
-    float    stop2 = 1.0;
-    uint32_t id    = 0;
+    float    x1    = 0.0f;
+    float    y1    = 0.0f;
+    float    x2    = 1.0f;
+    float    y2    = 1.0f;
     bool     group = false;
+    uint32_t id    = 0;
   };
-
   grad_t grad;
 
   bool  opacity_defined = false;
-  float opacity = 1.0;
+  float opacity = 1.0f;
 
 public:
 
   // Return the perceived difference [0.0;1.0] between two colors.
-  static float Diff( Color* color1, Color* color2 );
+  static float Diff( const Color* color1, const Color* color2 );
 
   bool operator==( const Color& other ) const;
+  bool operator!=( const Color& other ) const
+  {
+    return !(*this == other);
+  }
 
 };
 

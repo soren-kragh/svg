@@ -359,18 +359,18 @@ void test09( Group* g )
   auto r2 = g2->Add( new Rect( 300, 50, 400, 200 ) );
   auto r3 = g2->Add( new Rect( 500, 100, 600, 200 ) );
   auto t1 = g2->Add( new Text( 0, 120, "Hello!" ) );
-  t1->Attr()->TextFont()->SetSize( 48 )->SetBold();
-  {
-    Color c1{ ColorName::skyblue };
-    Color c2{ ColorName::red };
-    t1->Attr()->TextColor()->SetGroupGradient( &c1, &c2, 1, 1, 0, 0, 0.5, 1 );
-  }
 
-  {
-    Color c1{ ColorName::yellow };
-    Color c2{ ColorName::blue };
-    g1->Attr()->FillColor()->SetGroupGradient( &c1, &c2, 0, 0, 0, 1 );
-  }
+  t1->Attr()->TextFont()->SetSize( 48 )->SetBold();
+
+  t1->Attr()->TextColor()->AddGradientStop( Color( ColorName::skyblue ), 0.2 );
+  t1->Attr()->TextColor()->AddGradientStop( Color( ColorName::red ) );
+  t1->Attr()->TextColor()->AddGradientStop( Color( ColorName::pink ) );
+  t1->Attr()->TextColor()->AddGradientStop( Color( ColorName::orange ) );
+  t1->Attr()->TextColor()->SetGradientDir( 1, 1, 0, 0, true );
+
+  g1->Attr()->FillColor()->AddGradientStop( Color( ColorName::yellow ) );
+  g1->Attr()->FillColor()->AddGradientStop( Color( ColorName::blue ) );
+  g1->Attr()->FillColor()->SetGradientDir( 0, 0, 0, 1, true );
 
   r1->Move( -45, 30 );
   r1->Rotate( 40 );

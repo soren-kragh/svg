@@ -64,11 +64,11 @@ void Canvas::GenDefObject(
 )
 {
   auto gen_stop =
-    [&]( std::ostringstream& my_oss, float stop_ofs, Color::col_t& col )
+    [&]( std::ostringstream& my_oss, Color::col_t& col )
     {
       my_oss
         << indent
-        << "<stop offset=\"" << stop_ofs << '"'
+        << "<stop"
         << col.StopOffsetSVG()
         << "/>\n";
       return;
@@ -103,8 +103,9 @@ void Canvas::GenDefObject(
           << extra
           << ">\n";
         if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
-        gen_stop( my_oss, color->grad.stop1, color->col1 );
-        gen_stop( my_oss, color->grad.stop2, color->col2 );
+        for ( auto& col : color->col_list ) {
+          gen_stop( my_oss, col );
+        }
         if ( settings.indent ) indent.resize( indent.size() - 2 );
         grad_id++;
         auto [ it, inserted ] = grad_map.insert( { my_oss.str(), grad_id } );
