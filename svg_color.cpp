@@ -469,17 +469,23 @@ Color* Color::SetStopOfs( size_t i, float stop_ofs )
   return this;
 }
 
-Color* Color::SetOpacity( float opacity )
+Color* Color::SetOpacity( float opacity, bool gradient )
 {
-  if ( opacity < 0.0 ) opacity = 0.0;
-  if ( opacity > 1.0 ) opacity = 1.0;
-  this->opacity = opacity;
-  this->opacity_defined = true;
+  opacity = std::min( std::max( opacity, 0.0f ), 1.0f );
+  if ( gradient ) {
+    for ( auto& col : col_list ) {
+      col.stop_opacity = gradient;
+    }
+  } else {
+    this->opacity = opacity;
+    this->opacity_defined = true;
+  }
   return this;
 }
 
 Color* Color::Lighten( float f )
 {
+  f = std::min( std::max( f, -1.0f ), +1.0f );
   if ( f < 0 ) {
     col.r *= 1 + f;
     col.g *= 1 + f;
@@ -505,15 +511,26 @@ Color* Color::Lighten( float f )
   return this;
 }
 
-Color* Color::Opacify( float f )
+Color* Color::Opacify( float f, bool gradient )
 {
-  if ( !opacity_defined ) opacity = 1.0;
-  if ( f < 0 ) {
-    opacity *= 1 + f;
+  f = std::min( std::max( f, -1.0f ), +1.0f );
+  if ( gradient ) {
+    for ( auto& col : col_list ) {
+      if ( f < 0 ) {
+        col.stop_opacity *= 1 + f;
+      } else {
+        col.stop_opacity += (1 - col.stop_opacity) * f;
+      }
+    }
   } else {
-    opacity += (1 - opacity) * f;
+    if ( !opacity_defined ) opacity = 1.0;
+    if ( f < 0 ) {
+      opacity *= 1 + f;
+    } else {
+      opacity += (1 - opacity) * f;
+    }
+    opacity_defined = true;
   }
-  opacity_defined = true;
   return this;
 }
 

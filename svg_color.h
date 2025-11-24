@@ -78,11 +78,13 @@ public:
 
   // The opacity/transparency is a value in the range [0.0; 1.0]. Setting a
   // color deletes this attribute, so opacity/transparency should be set after
-  // the color has been set.
-  Color* SetOpacity( float opacity );
-  Color* SetTransparency( float transparency )
+  // the color has been set. If the gradient flag is set, then the individual
+  // gradient colors are affected instead of the overall opacity/transparency
+  // (for gradients, the two different opacity contributions compound).
+  Color* SetOpacity( float opacity, bool gradient = false );
+  Color* SetTransparency( float transparency, bool gradient = false )
   {
-    return SetOpacity( 1.0 - transparency );
+    return SetOpacity( 1.0 - transparency, gradient );
   }
 
   // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
@@ -93,10 +95,13 @@ public:
   }
 
   // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
-  // effect. If this color is a gradient, both stop colors are affected.
-  Color* Opacify( float f );
-  Color* Transparify( float f ) {
-    return Opacify( -f );
+  // effect. If this color is a gradient, both stop colors are affected. If the
+  // gradient flag is set, then the individual gradient colors are affected
+  // instead of the overall opacity/transparency (for gradients, the two
+  // different opacity contributions compound).
+  Color* Opacify( float f, bool gradient = false );
+  Color* Transparify( float f, bool gradient = false ) {
+    return Opacify( -f, gradient );
   }
 
   Color* Undef();
