@@ -86,6 +86,14 @@ public:
   {
     return SetOpacity( 1.0 - transparency, gradient );
   }
+  float GetOpacity()
+  {
+    return opacity_defined ? opacity : 1.0f;
+  }
+  float GetTransparency()
+  {
+    return 1.0f - GetOpacity();
+  }
 
   // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
   // effect. If this color is a gradient, both stop colors are affected.
