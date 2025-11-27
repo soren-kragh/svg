@@ -72,21 +72,21 @@ Font* Font::SetBold( bool bold )
   return this;
 }
 
-Font* Font::SetWidthFactor( float factor )
+Font* Font::SetWidthFactor( double factor )
 {
   width_factor_defined = true;
   width_factor = factor;
   return this;
 }
 
-Font* Font::SetHeightFactor( float factor )
+Font* Font::SetHeightFactor( double factor )
 {
   height_factor_defined = true;
   height_factor = factor;
   return this;
 }
 
-Font* Font::SetBaselineFactor( float factor )
+Font* Font::SetBaselineFactor( double factor )
 {
   baseline_factor_defined = true;
   baseline_factor = factor;

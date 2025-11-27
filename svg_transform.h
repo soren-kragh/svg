@@ -42,7 +42,7 @@ public:
   U translate_dx = 0;
   U translate_dy = 0;
 
-  float   rotate_theta          = 0;
+  double  rotate_theta          = 0;
   bool    rotate_anchor_defined = false;
   AnchorX rotate_anchor_x       = AnchorX::Mid;
   AnchorY rotate_anchor_y       = AnchorY::Mid;

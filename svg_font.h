@@ -37,9 +37,9 @@ public:
   // The font dimensions are normally determined based on the size and assuming
   // mono-space Latin letters, but if for example wider letters are used the
   // width can be scaled up.
-  Font* SetWidthFactor( float factor );
-  Font* SetHeightFactor( float factor );
-  Font* SetBaselineFactor( float factor );
+  Font* SetWidthFactor( double factor );
+  Font* SetHeightFactor( double factor );
+  Font* SetBaselineFactor( double factor );
 
   U GetWidth( void );
   U GetHeight( void );
@@ -55,14 +55,14 @@ private:
   bool size_defined;
   U    size;
 
-  bool  width_factor_defined;
-  float width_factor;
+  bool   width_factor_defined;
+  double width_factor;
 
-  bool  height_factor_defined;
-  float height_factor;
+  bool   height_factor_defined;
+  double height_factor;
 
-  bool  baseline_factor_defined;
-  float baseline_factor;
+  bool   baseline_factor_defined;
+  double baseline_factor;
 
   bool weight_defined;
   bool weight_bold;

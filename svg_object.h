@@ -56,19 +56,19 @@ public:
   }
 
   void Rotate(
-    float theta,
+    double theta,
     AnchorX anchor_x = AnchorX::Mid,
     AnchorY anchor_y = AnchorY::Mid
   ) {
-    transform.rotate_theta          = theta - 360.0f * std::floor(theta / 360.0f);
+    transform.rotate_theta          = theta - 360.0 * std::floor(theta / 360.0);
     transform.rotate_anchor_defined = true;
     transform.rotate_anchor_x       = anchor_x;
     transform.rotate_anchor_y       = anchor_y;
   }
   void Rotate(
-    float theta, U x, U y
+    double theta, U x, U y
   ) {
-    transform.rotate_theta          = theta - 360.0f * std::floor(theta / 360.0f);
+    transform.rotate_theta          = theta - 360.0 * std::floor(theta / 360.0);
     transform.rotate_anchor_defined = false;
     transform.rotate_point.x        = x;
     transform.rotate_point.y        = y;

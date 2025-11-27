@@ -28,35 +28,35 @@ public:
 
   Color( void );
   Color( uint8_t r, uint8_t g, uint8_t b );
-  Color( ColorName color, float lighten = 0.0 );
-  Color( std::string_view color_name, float lighten = 0.0 );
+  Color( ColorName color, double lighten = 0.0 );
+  Color( std::string_view color_name, double lighten = 0.0 );
   Color( const Color* color );
 
   Color* Set( uint8_t r, uint8_t g, uint8_t b );
 
   // The lighten value must be in the range [-1.0; 1.0]; a negative value
   // darkens the color.
-  Color* Set( ColorName color, float lighten = 0.0 );
+  Color* Set( ColorName color, double lighten = 0.0 );
 
   // Can be any of the 147 named SVG color codes. Returns nullptr if an invalid
   // color name is given.
-  Color* Set( std::string_view color_name, float lighten = 0.0 );
+  Color* Set( std::string_view color_name, double lighten = 0.0 );
 
   Color* Set( const Color* color );
 
   // Set color between two colors.
-  Color* Set( const Color* color1, const Color* color2, float f = 0.5 );
+  Color* Set( const Color* color1, const Color* color2, double f = 0.5 );
 
   // Used to add gradient stop points (see SVG linearGradient for how this
   // works), if the stop offset is outside the allowed [0.0;1.0] range it is
   // automatically assigned an equidistant value. If no color is given the
   // current color set by Set() is used.
-  Color* AddGradientStop( const Color* color, float stop_ofs = -1.0 );
-  Color* AddGradientStop( const Color& color, float stop_ofs = -1.0 )
+  Color* AddGradientStop( const Color* color, double stop_ofs = -1.0 );
+  Color* AddGradientStop( const Color& color, double stop_ofs = -1.0 )
   {
     return AddGradientStop( &color, stop_ofs );
   }
-  Color* AddGradientStop( float stop_ofs = -1.0 )
+  Color* AddGradientStop( double stop_ofs = -1.0 )
   {
     return AddGradientStop( this, stop_ofs );
   }
@@ -70,35 +70,35 @@ public:
   // therefore, setting the group flag on a group with moved and/or rotated
   // children will probably not result in the expected effect, unless you know
   // exactly what you're doing.
-  Color* SetGradientDir( float x1, float y1, float x2, float y2, bool group );
-  Color* SetGradientDir( float x1, float y1, float x2, float y2 );
+  Color* SetGradientDir( double x1, double y1, double x2, double y2, bool group );
+  Color* SetGradientDir( double x1, double y1, double x2, double y2 );
 
   // Define or redefine the stop offset for gradient color number i.
-  Color* SetStopOfs( size_t i, float stop_ofs );
+  Color* SetStopOfs( size_t i, double stop_ofs );
 
   // The opacity/transparency is a value in the range [0.0; 1.0]. Setting a
   // color deletes this attribute, so opacity/transparency should be set after
   // the color has been set. If the gradient flag is set, then the individual
   // gradient colors are affected instead of the overall opacity/transparency
   // (for gradients, the two different opacity contributions compound).
-  Color* SetOpacity( float opacity, bool gradient = false );
-  Color* SetTransparency( float transparency, bool gradient = false )
+  Color* SetOpacity( double opacity, bool gradient = false );
+  Color* SetTransparency( double transparency, bool gradient = false )
   {
     return SetOpacity( 1.0 - transparency, gradient );
   }
-  float GetOpacity()
+  double GetOpacity()
   {
-    return opacity_defined ? opacity : 1.0f;
+    return opacity_defined ? opacity : 1.0;
   }
-  float GetTransparency()
+  double GetTransparency()
   {
-    return 1.0f - GetOpacity();
+    return 1.0 - GetOpacity();
   }
 
   // Factor must be in the range [-1.0; 1.0]; a negative value applies opposite
   // effect. If this color is a gradient, both stop colors are affected.
-  Color* Lighten( float f );
-  Color* Darken( float f ) {
+  Color* Lighten( double f );
+  Color* Darken( double f ) {
     return Lighten( -f );
   }
 
@@ -107,8 +107,8 @@ public:
   // gradient flag is set, then the individual gradient colors are affected
   // instead of the overall opacity/transparency (for gradients, the two
   // different opacity contributions compound).
-  Color* Opacify( float f, bool gradient = false );
-  Color* Transparify( float f, bool gradient = false ) {
+  Color* Opacify( double f, bool gradient = false );
+  Color* Transparify( double f, bool gradient = false ) {
     return Opacify( -f, gradient );
   }
 
@@ -138,8 +138,8 @@ private:
 
     // Used only for gradient.
     bool  stop_ofs_auto = true;
-    float stop_ofs = 0.0f;
-    float stop_opacity = 1.0f;
+    double stop_ofs = 0.0;
+    double stop_opacity = 1.0;
 
     std::string StopOffsetSVG();
 
@@ -156,22 +156,22 @@ private:
 
   // Used only for gradient.
   struct grad_t {
-    float    x1    = 0.0f;
-    float    y1    = 0.0f;
-    float    x2    = 1.0f;
-    float    y2    = 1.0f;
+    double   x1    = 0.0;
+    double   y1    = 0.0;
+    double   x2    = 1.0;
+    double   y2    = 1.0;
     bool     group = false;
     uint32_t id    = 0;
   };
   grad_t grad;
 
-  bool  opacity_defined = false;
-  float opacity = 1.0f;
+  bool   opacity_defined = false;
+  double opacity = 1.0;
 
 public:
 
   // Return the perceived difference [0.0;1.0] between two colors.
-  static float Diff( const Color* color1, const Color* color2 );
+  static double Diff( const Color* color1, const Color* color2 );
 
   bool operator==( const Color& other ) const;
   bool operator!=( const Color& other ) const

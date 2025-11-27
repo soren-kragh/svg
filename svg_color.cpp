@@ -30,12 +30,12 @@ Color::Color( uint8_t r, uint8_t g, uint8_t b ) : Color()
   Set( r, g, b );
 }
 
-Color::Color( ColorName color, float lighten ) : Color()
+Color::Color( ColorName color, double lighten ) : Color()
 {
   Set( color, lighten );
 }
 
-Color::Color( std::string_view color_name, float lighten ) : Color()
+Color::Color( std::string_view color_name, double lighten ) : Color()
 {
   Set( color_name, lighten );
 }
@@ -55,14 +55,14 @@ Color* Color::Set( uint8_t r, uint8_t g, uint8_t b )
   col.g = g;
   col.b = b;
   col.stop_ofs_auto = true;
-  col.stop_ofs = 0.0f;
-  col.stop_opacity = 1.0f;
+  col.stop_ofs = 0.0;
+  col.stop_opacity = 1.0;
   col_list.clear();
   grad = {};
   return this;
 }
 
-Color* Color::Set( ColorName color, float lighten )
+Color* Color::Set( ColorName color, double lighten )
 {
   struct RGB {
     uint8_t r;
@@ -224,7 +224,7 @@ Color* Color::Set( ColorName color, float lighten )
   return this;
 }
 
-Color* Color::Set( std::string_view color_name, float lighten )
+Color* Color::Set( std::string_view color_name, double lighten )
 {
   static std::map< std::string_view, ColorName > name2color = {
     { "black"               , ColorName::black                },
@@ -390,7 +390,7 @@ Color* Color::Set( const Color* color )
   return this;
 }
 
-Color* Color::Set( const Color* color1, const Color* color2, float f )
+Color* Color::Set( const Color* color1, const Color* color2, double f )
 {
   Undef();
   if ( color1->col.rgb_defined && color2->col.rgb_defined ) {
@@ -408,9 +408,9 @@ void Color::ComputeAutoStopOfs()
   size_t i = 0;
   for ( size_t j = 1; j < col_list.size(); j++ ) {
     if ( !col_list[ j ].stop_ofs_auto || j == col_list.size() - 1 ) {
-      if ( col_list[ i ].stop_ofs_auto ) col_list[ i ].stop_ofs = 0.0f;
-      if ( col_list[ j ].stop_ofs_auto ) col_list[ j ].stop_ofs = 1.0f;
-      float d = 1.0f / (j - i);
+      if ( col_list[ i ].stop_ofs_auto ) col_list[ i ].stop_ofs = 0.0;
+      if ( col_list[ j ].stop_ofs_auto ) col_list[ j ].stop_ofs = 1.0;
+      double d = 1.0 / (j - i);
       for ( size_t k = i + 1; k < j; k++ ) {
         col_list[ k ].stop_ofs =
           col_list[ i ].stop_ofs +
@@ -427,11 +427,11 @@ void Color::ComputeAutoStopOfs()
   col.b = col_list.back().b;
 }
 
-Color* Color::AddGradientStop( const Color* color, float stop_ofs )
+Color* Color::AddGradientStop( const Color* color, double stop_ofs )
 {
   if ( !color->IsClear() ) {
     col_t col{ color->col };
-    col.stop_ofs_auto = stop_ofs < 0.0f || stop_ofs > 1.0f;
+    col.stop_ofs_auto = stop_ofs < 0.0 || stop_ofs > 1.0;
     col.stop_ofs = stop_ofs;
     if ( color->opacity_defined ) col.stop_opacity = color->opacity;
     col_list.emplace_back( col );
@@ -441,7 +441,7 @@ Color* Color::AddGradientStop( const Color* color, float stop_ofs )
 }
 
 Color* Color::SetGradientDir(
-  float x1, float y1, float x2, float y2, bool group
+  double x1, double y1, double x2, double y2, bool group
 )
 {
   grad.group = group;
@@ -449,7 +449,7 @@ Color* Color::SetGradientDir(
 }
 
 Color* Color::SetGradientDir(
-  float x1, float y1, float x2, float y2
+  double x1, double y1, double x2, double y2
 )
 {
   grad.x1 = x1;
@@ -459,19 +459,19 @@ Color* Color::SetGradientDir(
   return this;
 }
 
-Color* Color::SetStopOfs( size_t i, float stop_ofs )
+Color* Color::SetStopOfs( size_t i, double stop_ofs )
 {
   if ( i < col_list.size() ) {
-    col_list[ i ].stop_ofs_auto = stop_ofs < 0.0f || stop_ofs > 1.0f;
+    col_list[ i ].stop_ofs_auto = stop_ofs < 0.0 || stop_ofs > 1.0;
     col_list[ i ].stop_ofs = stop_ofs;
     ComputeAutoStopOfs();
   }
   return this;
 }
 
-Color* Color::SetOpacity( float opacity, bool gradient )
+Color* Color::SetOpacity( double opacity, bool gradient )
 {
-  opacity = std::min( std::max( opacity, 0.0f ), 1.0f );
+  opacity = std::min( std::max( opacity, 0.0 ), 1.0 );
   if ( gradient ) {
     for ( auto& col : col_list ) {
       col.stop_opacity = gradient;
@@ -483,9 +483,9 @@ Color* Color::SetOpacity( float opacity, bool gradient )
   return this;
 }
 
-Color* Color::Lighten( float f )
+Color* Color::Lighten( double f )
 {
-  f = std::min( std::max( f, -1.0f ), +1.0f );
+  f = std::min( std::max( f, -1.0 ), +1.0 );
   if ( f < 0 ) {
     col.r *= 1 + f;
     col.g *= 1 + f;
@@ -511,9 +511,9 @@ Color* Color::Lighten( float f )
   return this;
 }
 
-Color* Color::Opacify( float f, bool gradient )
+Color* Color::Opacify( double f, bool gradient )
 {
-  f = std::min( std::max( f, -1.0f ), +1.0f );
+  f = std::min( std::max( f, -1.0 ), +1.0 );
   if ( gradient ) {
     for ( auto& col : col_list ) {
       if ( f < 0 ) {
@@ -613,7 +613,7 @@ std::string Color::SVG()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-float Color::Diff( const Color* color1, const Color* color2 )
+double Color::Diff( const Color* color1, const Color* color2 )
 {
   if ( color1->IsClear() || color2->IsClear() ) return 0.0;
 
@@ -624,16 +624,16 @@ float Color::Diff( const Color* color1, const Color* color2 )
   int delta_b =
     static_cast<int>( color1->col.b ) - static_cast<int>( color2->col.b );
 
-  float r_mean = (static_cast<float>( color1->col.r ) + color2->col.r) / 2.0;
+  double r_mean = (static_cast<double>( color1->col.r ) + color2->col.r) / 2.0;
 
-  float term_r = (2.0 + r_mean / 256.0) * delta_r * delta_r;
-  float term_g = 4.0 * delta_g * delta_g;
-  float term_b = (2.0 + (255.0 - r_mean) / 256.0) * delta_b * delta_b;
+  double term_r = (2.0 + r_mean / 256.0) * delta_r * delta_r;
+  double term_g = 4.0 * delta_g * delta_g;
+  double term_b = (2.0 + (255.0 - r_mean) / 256.0) * delta_b * delta_b;
 
-  float distance = std::sqrt( term_r + term_g + term_b );
+  double distance = std::sqrt( term_r + term_g + term_b );
 
-  const float max_distance = 764.833;
-  float result = distance / max_distance;
+  const  double max_distance = 764.833;
+  double result = distance / max_distance;
 
   return (result > 1.0) ? 1.0 : (result < 0.0) ? 0.0 : result;
 }

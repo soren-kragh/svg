@@ -39,8 +39,8 @@ public:
   // opacity/transparency is a value in the range [0.0; 1.0]; default is
   // 1.0/0.0. Note that opacity/transparency may not be supported by all
   // viewers.
-  Attributes* SetOpacity( float opacity );
-  Attributes* SetTransparency( float transparency )
+  Attributes* SetOpacity( double opacity );
+  Attributes* SetTransparency( double transparency )
   {
     return SetOpacity( 1.0 - transparency );
   }
@@ -87,8 +87,8 @@ private:
 
   Object* object;
 
-  bool  opacity_defined;
-  float opacity;
+  bool   opacity_defined;
+  double opacity;
 
   bool     line_width_defined;
   U        line_width;

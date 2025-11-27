@@ -173,7 +173,7 @@ std::string Object::TransSVG( void )
       oss
         << s
         << "rotate("
-        << U( 360.0f - transform.rotate_theta).SVG( false ) << ' '
+        << U( 360.0 - transform.rotate_theta).SVG( false ) << ' '
         << U( +transform.rotate_point.x ).SVG( false ) << ' '
         << U( -transform.rotate_point.y ).SVG( false )
         << ')';
