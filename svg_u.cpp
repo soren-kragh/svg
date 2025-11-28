@@ -19,25 +19,11 @@ using namespace SVG;
 
 std::string U::SVG( bool quoted )
 {
-  std::ostringstream oss;
-  if ( quoted ) oss << '"';
-  int64_t x = std::llround( value * 1000.0 );
-  if ( x < 0 ) {
-    oss << '-';
-    x = -x;
-  }
-  oss << (x / 1000);
-  x = x % 1000;
-  if ( x > 0 ) {
-    oss << '.';
-  }
-  while ( x > 0 ) {
-    oss << (x / 100);
-    x = x % 100;
-    x = x * 10;
-  }
-  if ( quoted ) oss << '"';
-  return oss.str();
+  std::string s;
+  if ( quoted ) s += '"';
+  s += ToFixed( value, 3 );
+  if ( quoted ) s += '"';
+  return s;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

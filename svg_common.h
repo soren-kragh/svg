@@ -206,6 +206,8 @@ namespace SVG {
   enum class LineCap { Butt, Round, Square };
   enum class LineJoin { Sharp, Round };
 
+  std::string ToFixed( double d, uint32_t decimals );
+
   // Collision is determined by object boundary box alone, so it tends to be
   // quite conservative.
   bool Collides( Object* obj1, Object* obj2 );

@@ -18,6 +18,19 @@ using namespace SVG;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+std::string SVG::ToFixed( double d, uint32_t decimals )
+{
+  std::ostringstream oss;
+  oss << std::fixed << std::setprecision( decimals ) << d;
+  std::string s = oss.str();
+  if ( decimals > 0 ) s.erase(s.find_last_not_of( '0' ) + 1);
+  if ( !s.empty() && s.back() == '.' ) s.pop_back();
+  if ( s == "-0" ) s = "0";
+  return s;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool SVG::Collides( Object* obj1, Object* obj2, U margin_x, U margin_y )
 {
   if ( obj1 == nullptr || obj2 == nullptr ) return false;

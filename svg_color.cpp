@@ -558,7 +558,7 @@ std::string Color::col_t::StopOffsetSVG()
   std::ostringstream oss;
   if ( rgb_defined && !rgb_none ) {
     oss
-      << " offset=\"" << stop_ofs << '"'
+      << " offset=" << '"' << ToFixed( stop_ofs, 6 ) << '"'
       << " stop-color="
       << "\"#"
       << std::hex << std::setfill( '0' ) << std::uppercase
@@ -567,9 +567,7 @@ std::string Color::col_t::StopOffsetSVG()
       << std::setw( 2 ) << (0xFF & b)
       << '"';
     if ( stop_opacity < 1.0 ) {
-      oss
-        << " stop-opacity=\""
-        << std::dec << std::setprecision( 3 ) << stop_opacity << '"';
+      oss << " stop-opacity=" << '"' << ToFixed( stop_opacity, 3 ) << '"';
     }
   }
   return oss.str();
@@ -587,9 +585,7 @@ std::string Color::SVG( std::string_view name )
     }
   }
   if ( opacity_defined && !(col.rgb_defined && col.rgb_none) ) {
-    oss
-      << ' ' << name << "-opacity=\""
-      << std::dec << std::setprecision( 3 ) << opacity << '"';
+    oss << ' ' << name << "-opacity=" << '"' << ToFixed( opacity, 3 ) << '"';
   }
   return oss.str();
 }
