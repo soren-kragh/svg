@@ -403,8 +403,28 @@ Color* Color::Set( const Color* color1, const Color* color2, double f )
   return this;
 }
 
-void Color::ComputeAutoStopOfs()
+void Color::ComputeAutoStopOfs( size_t prsv )
 {
+  {
+    bool   sa = col_list[ prsv ].stop_ofs_auto;
+    double so = col_list[ prsv ].stop_ofs;
+    for ( size_t i = prsv; i-- > 0; ) {
+      if ( col_list[ i ].stop_ofs_auto ) continue;
+      if ( !sa && col_list[ i ].stop_ofs > so ) col_list[ i ].stop_ofs = so;
+      sa = true;
+      so = col_list[ i ].stop_ofs;
+    }
+  }
+  {
+    bool   sa = col_list[ prsv ].stop_ofs_auto;
+    double so = col_list[ prsv ].stop_ofs;
+    for ( size_t i = prsv; ++i < col_list.size(); ) {
+      if ( col_list[ i ].stop_ofs_auto ) continue;
+      if ( !sa && col_list[ i ].stop_ofs < so ) col_list[ i ].stop_ofs = so;
+      sa = true;
+      so = col_list[ i ].stop_ofs;
+    }
+  }
   size_t i = 0;
   for ( size_t j = 1; j < col_list.size(); j++ ) {
     if ( !col_list[ j ].stop_ofs_auto || j == col_list.size() - 1 ) {
@@ -435,7 +455,7 @@ Color* Color::AddGradientStop( const Color* color, double stop_ofs )
     col.stop_ofs = stop_ofs;
     if ( color->opacity_defined ) col.stop_opacity = color->opacity;
     col_list.emplace_back( col );
-    ComputeAutoStopOfs();
+    ComputeAutoStopOfs( col_list.size() - 1 );
   }
   return this;
 }
@@ -464,7 +484,7 @@ Color* Color::SetStopOfs( size_t i, double stop_ofs )
   if ( i < col_list.size() ) {
     col_list[ i ].stop_ofs_auto = stop_ofs < 0.0 || stop_ofs > 1.0;
     col_list[ i ].stop_ofs = stop_ofs;
-    ComputeAutoStopOfs();
+    ComputeAutoStopOfs( i );
   }
   return this;
 }

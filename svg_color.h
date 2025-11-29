@@ -127,7 +127,10 @@ public:
 
 private:
 
-  void ComputeAutoStopOfs();
+
+  // Compute stop offsets. If the stop offsets are illegal they will be
+  // legalized, however, the stop offset at index prsv is preserved.
+  void ComputeAutoStopOfs( size_t prsv = 0 );
 
   struct col_t {
     bool    rgb_defined = false;
