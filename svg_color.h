@@ -74,7 +74,15 @@ public:
   Color* SetGradientDir( double x1, double y1, double x2, double y2 );
 
   // Define or redefine the stop offset for gradient color number i.
-  Color* SetStopOfs( size_t i, double stop_ofs );
+  Color* SetStopOfs( int i, double stop_ofs );
+
+  // If this color is a gradient, then it is converted to a plain color. The sel
+  // defines how the plain color and its opacity is derived:
+  //    sel     Description
+  //    < 0     First color in gradient
+  //    = 0     Average of all colors in gradient
+  //    > 0     Last color in gradient
+  Color* RemoveGradient( int sel );
 
   // The opacity/transparency is a value in the range [0.0; 1.0]. Setting a
   // color deletes this attribute, so opacity/transparency should be set after
@@ -127,10 +135,9 @@ public:
 
 private:
 
-
   // Compute stop offsets. If the stop offsets are illegal they will be
   // legalized, however, the stop offset at index prsv is preserved.
-  void ComputeAutoStopOfs( size_t prsv = 0 );
+  void ComputeAutoStopOfs( int prsv = 0 );
 
   struct col_t {
     bool    rgb_defined = false;

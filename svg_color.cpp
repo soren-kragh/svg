@@ -403,7 +403,7 @@ Color* Color::Set( const Color* color1, const Color* color2, double f )
   return this;
 }
 
-void Color::ComputeAutoStopOfs( size_t prsv )
+void Color::ComputeAutoStopOfs( int prsv )
 {
   {
     bool   sa = col_list[ prsv ].stop_ofs_auto;
@@ -479,12 +479,43 @@ Color* Color::SetGradientDir(
   return this;
 }
 
-Color* Color::SetStopOfs( size_t i, double stop_ofs )
+Color* Color::SetStopOfs( int i, double stop_ofs )
 {
-  if ( i < col_list.size() ) {
+  if ( i >= 0 && i < static_cast< int >( col_list.size() ) ) {
     col_list[ i ].stop_ofs_auto = stop_ofs < 0.0 || stop_ofs > 1.0;
     col_list[ i ].stop_ofs = stop_ofs;
     ComputeAutoStopOfs( i );
+  }
+  return this;
+}
+
+Color* Color::RemoveGradient( int sel )
+{
+  if ( IsGradient() ) {
+    int i1 = 0;
+    int i2 = col_list.size() - 1;
+    if ( sel < 0 ) i2 = i1;
+    if ( sel > 0 ) i1 = i2;
+    double r_sum = 0;
+    double g_sum = 0;
+    double b_sum = 0;
+    double opacity_sum = 0;
+    for ( int i = i1; i <= i2; i++ ) {
+      r_sum += col_list[ i ].r;
+      g_sum += col_list[ i ].g;
+      b_sum += col_list[ i ].b;
+      opacity_sum += col_list[ i ].stop_opacity;
+    }
+    col = {};
+    col.rgb_defined = true;
+    col.rgb_none = false;
+    col.r = r_sum / (i2 - i1 + 1);
+    col.g = g_sum / (i2 - i1 + 1);
+    col.b = b_sum / (i2 - i1 + 1);
+    opacity = (opacity_defined ? opacity : 1.0) * opacity_sum / (i2 - i1 + 1);
+    opacity_defined = opacity_defined || opacity < 1.0;
+    grad = {};
+    col_list.clear();
   }
   return this;
 }
