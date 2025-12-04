@@ -92,6 +92,19 @@ void Canvas::GenDefObject(
           x2 = +bb.min.x + (bb.max.x - bb.min.x) * color->grad.x2;
           y1 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y1;
           y2 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y2;
+          if ( std::abs( x2 - x1 ) < 1e-2 && std::abs( y2 - y1 ) < 1e-2 ) {
+            x1 = x2 = (bb.min.x + bb.max.x) * 0.5;
+            y1 = y2 = (bb.min.y + bb.max.y) * 0.5;
+            if ( color->grad.y1 == color->grad.y2 ) {
+              x1 -= 1;
+              x2 += 1;
+              if ( color->grad.x2 < color->grad.x1 ) std::swap( x1, x2 );
+            } else {
+              y1 += 1;
+              y2 -= 1;
+              if ( color->grad.y2 < color->grad.y1 ) std::swap( y1, y2 );
+            }
+          }
           extra = " gradientUnits=\"userSpaceOnUse\"";
         }
         std::ostringstream my_oss;
