@@ -25,6 +25,15 @@ Object::Object( void )
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void Object::CheckTop( std::string_view name )
+{
+  if ( is_top ) {
+    SVG_FATAL( name << " not allowed on top group" );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 Group* Object::ParentGroup( void )
 {
   if ( parent_group == nullptr ) {
@@ -130,6 +139,7 @@ void Object::MoveTo(
   U x, U y
 )
 {
+  CheckTop( "SVG::Object::MoveTo" );
   BoundaryBox bb = GetBB();
   Point p;
   switch ( anchor_x ) {

@@ -39,6 +39,7 @@ public:
 
   void Move( U dx, U dy )
   {
+    CheckTop( "SVG::Object::Move" );
     transform.translate_dx += dx;
     transform.translate_dy += dy;
   }
@@ -60,6 +61,7 @@ public:
     AnchorX anchor_x = AnchorX::Mid,
     AnchorY anchor_y = AnchorY::Mid
   ) {
+    CheckTop( "SVG::Object::Rotate" );
     transform.rotate_theta          = theta - 360.0 * std::floor(theta / 360.0);
     transform.rotate_anchor_defined = true;
     transform.rotate_anchor_x       = anchor_x;
@@ -68,6 +70,7 @@ public:
   void Rotate(
     double theta, U x, U y
   ) {
+    CheckTop( "SVG::Object::Rotate" );
     transform.rotate_theta          = theta - 360.0 * std::floor(theta / 360.0);
     transform.rotate_anchor_defined = false;
     transform.rotate_point.x        = x;
@@ -89,6 +92,8 @@ public:
   BoundaryBox GetAbsBB( void );
 
 protected:
+
+  void CheckTop( std::string_view name );
 
   // Get boundary box without applying transforms.
   BoundaryBox GetNoTransBB( void );
@@ -112,6 +117,8 @@ protected:
     std::ostringstream& oss,
     std::string& indent
   ) = 0;
+
+  bool is_top = false;
 
   Group* parent_group;
 

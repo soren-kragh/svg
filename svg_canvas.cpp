@@ -21,6 +21,7 @@ Canvas::Canvas( void )
 {
   background.Clear();
   top_group = new Group();
+  top_group->is_top = true;
   top_group->Attr()->SetLineWidth( 1 );
   top_group->Attr()->SetLineSolid();
   top_group->Attr()->SetLineCap( LineCap::Butt );
