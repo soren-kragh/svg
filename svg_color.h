@@ -43,9 +43,17 @@ public:
   Color* Set( std::string_view color_name, double lighten = 0.0 );
 
   Color* Set( const Color* color );
+  Color* Set( const Color& color )
+  {
+    return Set( &color );
+  }
 
   // Set color between two colors.
   Color* Set( const Color* color1, const Color* color2, double f = 0.5 );
+  Color* Set( const Color& color1, const Color& color2, double f = 0.5 )
+  {
+    return Set( &color1, &color2, f );
+  }
 
   // Used to add gradient stop points (see SVG linearGradient for how this
   // works), if the stop offset is outside the allowed [0.0;1.0] range it is
@@ -182,6 +190,10 @@ public:
 
   // Return the perceived difference [0.0;1.0] between two colors.
   static double Diff( const Color* color1, const Color* color2 );
+  static double Diff( const Color& color1, const Color& color2 )
+  {
+    return Diff( &color1, &color2 );
+  }
 
   bool operator==( const Color& other ) const;
   bool operator!=( const Color& other ) const
