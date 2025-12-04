@@ -45,18 +45,6 @@ Canvas::~Canvas( void )
   delete top_group;
 }
 
-Group* Canvas::TopGroup( void )
-{
-  return top_group;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-Color* Canvas::Background( void )
-{
-  return &background;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void Canvas::GenDefObject(

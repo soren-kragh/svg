@@ -33,9 +33,9 @@ public:
   Canvas( void );
   ~Canvas( void );
 
-  Group* TopGroup( void );
+  Group* TopGroup() { return top_group; }
 
-  Color* Background( void );
+  Color* Background() { return &background; }
 
   // Extra attributes may optionally be added to the SVG.
   std::string GenSVG( U margin = 0, std::string_view attr = "" );
