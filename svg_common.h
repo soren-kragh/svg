@@ -54,6 +54,7 @@ namespace SVG {
 
   // Colors defined by the Scalable Vector Graphics (SVG) Specification.
   enum class ColorName {
+    none                ,
     black               ,
     navy                ,
     darkblue            ,

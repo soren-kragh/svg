@@ -218,15 +218,20 @@ Color* Color::Set( ColorName color, double lighten )
     { ColorName::ivory               , { 0xFF, 0xFF, 0xF0 } },
     { ColorName::white               , { 0xFF, 0xFF, 0xFF } },
   };
-  RGB rgb = color2rgb[ color ];
-  Set( rgb.r, rgb.g, rgb.b );
-  Lighten( lighten );
+  if ( color == ColorName::none ) {
+    Clear();
+  } else {
+    RGB rgb = color2rgb[ color ];
+    Set( rgb.r, rgb.g, rgb.b );
+    Lighten( lighten );
+  }
   return this;
 }
 
 Color* Color::Set( std::string_view color_name, double lighten )
 {
   static std::map< std::string_view, ColorName > name2color = {
+    { "none"                , ColorName::none                 },
     { "black"               , ColorName::black                },
     { "navy"                , ColorName::navy                 },
     { "darkblue"            , ColorName::darkblue             },

@@ -121,10 +121,10 @@ public:
   }
 
   Color* Undef();
-  Color* Clear();
+  Color* Clear();       // Same as setting to ColorName::none
 
   bool IsDefined() const { return col.rgb_defined; }
-  bool IsClear() const { return col.rgb_none; }
+  bool IsClear() const { return !col.rgb_defined || col.rgb_none; }
   bool IsGradient() const
   {
     return !col_list.empty();
