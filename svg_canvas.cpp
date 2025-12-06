@@ -27,8 +27,8 @@ Canvas::Canvas( void )
   top_group->Attr()->SetLineSolid();
   top_group->Attr()->SetLineCap( LineCap::Butt );
   top_group->Attr()->SetLineJoin( LineJoin::Sharp );
-  top_group->Attr()->LineColor()->Set( ColorName::black );
-  top_group->Attr()->FillColor()->Clear();
+  top_group->Attr()->LineColor()->Clear();
+  top_group->Attr()->FillColor()->Set( ColorName::black );
   top_group->Attr()->TextFont()->SetFamily( "monospace" );
   top_group->Attr()->TextFont()->SetSize( 12 );
   top_group->Attr()->TextFont()->SetBold( false );
