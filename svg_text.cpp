@@ -116,9 +116,7 @@ void Text::GenSVG(
     y += final_attr.TextFont()->GetBaseline();
   }
 
-  oss
-    << indent << "<g text-anchor=\"middle\""
-    << Attr()->SVG( true ) << '>' << '\n';
+  oss << indent << "<g" << Attr()->SVG( true ) << '>' << '\n';
 
   if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
 

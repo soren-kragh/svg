@@ -39,6 +39,7 @@ Canvas::Canvas( void )
   top_group->Attr()->TextOutlineColor()->SetOpacity( 1.0 );
   top_group->Attr()->TextColor()->Set( ColorName::black );
   top_group->Attr()->TextColor()->SetOpacity( 1.0 );
+  top_group->Attr()->AddCustom( "text-anchor=\"middle\"" );
 }
 
 Canvas::~Canvas( void )
