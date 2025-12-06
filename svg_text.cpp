@@ -12,6 +12,7 @@
 //
 
 #include <svg_text.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -118,7 +119,7 @@ void Text::GenSVG(
 
   oss << indent << "<g" << Attr()->SVG( true ) << '>' << '\n';
 
-  if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
+  if ( canvas->settings.indent ) indent.resize( indent.size() + 2, ' ' );
 
   size_t cidx = 0;
   while ( cidx < str.size() ) {
@@ -153,7 +154,7 @@ void Text::GenSVG(
     }
   }
 
-  if ( settings.indent ) indent.resize( indent.size() - 2 );
+  if ( canvas->settings.indent ) indent.resize( indent.size() - 2 );
 
   oss << indent << "</g>" << '\n';
 }

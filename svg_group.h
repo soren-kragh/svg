@@ -26,7 +26,7 @@ class Group : public Object
 
 public:
 
-  Group( void );
+  Group( void ) {}
   ~Group( void );
 
   Object* Add( Object* object );
@@ -73,7 +73,7 @@ private:
 
   std::deque< Object* > objects;
 
-  Object* last;
+  Object* last = nullptr;
 
 };
 

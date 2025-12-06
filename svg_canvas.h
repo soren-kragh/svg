@@ -40,6 +40,12 @@ public:
   // Extra attributes may optionally be added to the SVG.
   std::string GenSVG( U margin = 0, std::string_view attr = "" );
 
+  // Various global settings.
+  struct Settings {
+    // Controls whether lines in the SVG Will be indented.
+    bool indent = true;
+  } settings;
+
 private:
 
   std::unordered_map< std::string, uint32_t > grad_map;

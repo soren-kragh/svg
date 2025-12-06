@@ -213,11 +213,4 @@ namespace SVG {
   // quite conservative.
   bool Collides( Object* obj1, Object* obj2 );
   bool Collides( Object* obj1, Object* obj2, U margin_x, U margin_y );
-
-  struct Settings {
-    bool indent = true;
-  };
-
-  inline Settings settings;
-
 }

@@ -12,15 +12,9 @@
 //
 
 #include <svg_group.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
-
-////////////////////////////////////////////////////////////////////////////////
-
-Group::Group( void )
-{
-  last = nullptr;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -38,6 +32,7 @@ Object* Group::Add( Object* object )
   if ( object->parent_group != nullptr ) {
     SVG_FATAL( "SVG::Group::Add: object cannot be added to a group more than once" );
   }
+  object->canvas = canvas;
   object->parent_group = this;
   objects.push_back( object );
   last = object;
@@ -182,13 +177,13 @@ void Group::GenSVG(
 {
   oss << indent << "<g" << Attr()->SVG() << ">" << "\n";
 
-  if ( settings.indent ) indent.resize( indent.size() + 2, ' ' );
+  if ( canvas->settings.indent ) indent.resize( indent.size() + 2, ' ' );
 
   for ( auto object : objects ) {
     object->GenSVG( oss, indent );
   }
 
-  if ( settings.indent ) indent.resize( indent.size() - 2 );
+  if ( canvas->settings.indent ) indent.resize( indent.size() - 2 );
 
   oss << indent << "</g>" << "\n";
 }

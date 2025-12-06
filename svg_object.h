@@ -30,7 +30,7 @@ class Object
 
 public:
 
-  Object( void );
+  Object( void ) {}
   virtual ~Object( void ) {}
 
   Group* ParentGroup( void );
@@ -120,7 +120,8 @@ protected:
 
   bool is_top = false;
 
-  Group* parent_group;
+  Canvas* canvas = nullptr;
+  Group* parent_group = nullptr;
 
   Attributes attr = Attributes( this );
 
