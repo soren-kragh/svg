@@ -74,15 +74,19 @@ void Canvas::GenDefObject(
         }
         U x1{ color->grad.x1 };
         U x2{ color->grad.x2 };
-        U y1{ 1.0 - color->grad.y1 };
-        U y2{ 1.0 - color->grad.y2 };
+        U y1{ color->grad.y1 };
+        U y2{ color->grad.y2 };
+        if ( settings.std_coor ) {
+          y1 = 1.0 - y1;
+          y2 = 1.0 - y2;
+        }
         std::string extra;
         if ( color->grad.group ) {
           auto bb = obj->GetNoTransBB();
-          x1 = +bb.min.x + (bb.max.x - bb.min.x) * color->grad.x1;
-          x2 = +bb.min.x + (bb.max.x - bb.min.x) * color->grad.x2;
-          y1 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y1;
-          y2 = -bb.min.y - (bb.max.y - bb.min.y) * color->grad.y2;
+          x1 = bb.min.x + (bb.max.x - bb.min.x) * color->grad.x1;
+          x2 = bb.min.x + (bb.max.x - bb.min.x) * color->grad.x2;
+          y1 = bb.min.y + (bb.max.y - bb.min.y) * color->grad.y1;
+          y2 = bb.min.y + (bb.max.y - bb.min.y) * color->grad.y2;
           if ( std::abs( x2 - x1 ) < 1e-2 && std::abs( y2 - y1 ) < 1e-2 ) {
             x1 = x2 = (bb.min.x + bb.max.x) * 0.5;
             y1 = y2 = (bb.min.y + bb.max.y) * 0.5;
@@ -91,10 +95,14 @@ void Canvas::GenDefObject(
               x2 += 1;
               if ( color->grad.x2 < color->grad.x1 ) std::swap( x1, x2 );
             } else {
-              y1 += 1;
-              y2 -= 1;
+              y1 -= 1;
+              y2 += 1;
               if ( color->grad.y2 < color->grad.y1 ) std::swap( y1, y2 );
             }
+          }
+          if ( settings.std_coor ) {
+            y1 = -y1;
+            y2 = -y2;
           }
           extra = " gradientUnits=\"userSpaceOnUse\"";
         }
@@ -173,8 +181,8 @@ std::string Canvas::GenSVG( U margin, std::string_view attr )
   boundary_box.max.y += margin;
   U canvas_w = boundary_box.max.x - boundary_box.min.x;
   U canvas_h = boundary_box.max.y - boundary_box.min.y;
-  U svg_min_x = +boundary_box.min.x;
-  U svg_min_y = -boundary_box.max.y;
+  U svg_min_x = boundary_box.min.x;
+  U svg_min_y = settings.std_coor ? -boundary_box.max.y : +boundary_box.min.y;
 
   oss
     << "<svg"

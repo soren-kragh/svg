@@ -12,6 +12,7 @@
 //
 
 #include <svg_poly.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -63,7 +64,9 @@ void Poly::GenSVG(
     }
     char c = '"';
     for ( Point p : point_list ) {
-      oss << c << U( +p.x ).SVG( false ) << ',' << U( -p.y ).SVG( false );
+      oss
+        << c << U( p.x ).SVG( false )
+        << ',' << U( canvas->settings.std_coor ? -p.y : +p.y ).SVG( false );
       c = ' ';
     }
     oss << '"' << Attr()->SVG() << " />" << "\n";

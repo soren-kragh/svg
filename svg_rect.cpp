@@ -12,6 +12,7 @@
 //
 
 #include <svg_rect.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -81,8 +82,8 @@ void Rect::GenSVG(
 {
   oss
     << indent << "<rect"
-    << " x=" << U( +p1.x ).SVG()
-    << " y=" << U( -p2.y ).SVG()
+    << " x=" << U( p1.x ).SVG()
+    << " y=" << U( canvas->settings.std_coor ? -p2.y : +p2.y ).SVG()
     << " width="  << U( p2.x - p1.x ).SVG()
     << " height=" << U( p2.y - p1.y ).SVG();
   if ( corner_r > 0 ) {

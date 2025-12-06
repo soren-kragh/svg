@@ -12,6 +12,7 @@
 //
 
 #include <svg_line.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -62,10 +63,10 @@ void Line::GenSVG(
 {
   oss
     << indent << "<line"
-    << " x1=" << U( +p1.x ).SVG()
-    << " y1=" << U( -p1.y ).SVG()
-    << " x2=" << U( +p2.x ).SVG()
-    << " y2=" << U( -p2.y ).SVG()
+    << " x1=" << U( p1.x ).SVG()
+    << " y1=" << U( canvas->settings.std_coor ? -p1.y : +p1.y ).SVG()
+    << " x2=" << U( p2.x ).SVG()
+    << " y2=" << U( canvas->settings.std_coor ? -p2.y : +p2.y ).SVG()
     << Attr()->SVG()
     << " />" << "\n";
 }

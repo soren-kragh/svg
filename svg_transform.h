@@ -30,23 +30,23 @@ public:
     switch ( rotate_anchor_x ) {
       case AnchorX::Min : rotate_point.x = bb.min.x; break;
       case AnchorX::Max : rotate_point.x = bb.max.x; break;
-      default           : rotate_point.x = (bb.min.x + bb.max.x) / 2;
+      default           : rotate_point.x = (bb.min.x + bb.max.x) * 0.5;
     }
     switch ( rotate_anchor_y ) {
       case AnchorY::Min : rotate_point.y = bb.min.y; break;
       case AnchorY::Max : rotate_point.y = bb.max.y; break;
-      default           : rotate_point.y = (bb.min.y + bb.max.y) / 2;
+      default           : rotate_point.y = (bb.min.y + bb.max.y) * 0.5;
     }
   }
 
-  U translate_dx = 0;
-  U translate_dy = 0;
+  U translate_dx = 0.0;
+  U translate_dy = 0.0;
 
-  double  rotate_theta          = 0;
+  double  rotate_theta          = 0.0;
   bool    rotate_anchor_defined = false;
   AnchorX rotate_anchor_x       = AnchorX::Mid;
   AnchorY rotate_anchor_y       = AnchorY::Mid;
-  Point   rotate_point{ 0, 0 };
+  Point   rotate_point{ 0.0, 0.0 };
 
 };
 

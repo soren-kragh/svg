@@ -12,6 +12,7 @@
 //
 
 #include <svg_circle.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -59,8 +60,8 @@ void Circle::GenSVG(
 {
   oss
     << indent << "<circle"
-    << " cx=" << U( +center.x ).SVG()
-    << " cy=" << U( -center.y ).SVG()
+    << " cx=" << U( center.x ).SVG()
+    << " cy=" << U( canvas->settings.std_coor ? -center.y : +center.y ).SVG()
     << " r=" << U( radius ).SVG()
     << Attr()->SVG()
     << " />" << "\n";

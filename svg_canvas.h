@@ -42,8 +42,14 @@ public:
 
   // Various global settings.
   struct Settings {
+
     // Controls whether lines in the SVG Will be indented.
     bool indent = true;
+
+    // SVG coordinates normally have the Y-values going from top to bottom. This
+    // flag defines is standard mathematical coordinates should be used instead.
+    bool std_coor = false;
+
   } settings;
 
 private:

@@ -66,8 +66,8 @@ public:
   }
 
   void Reset() {
-    min.x = +1;
-    max.x = -1;
+    min.x = +1.0;
+    max.x = -1.0;
   }
 
 };

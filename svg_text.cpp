@@ -107,14 +107,16 @@ void Text::GenSVG(
 
   // Emulate text-anchor by adjusting the x- y-coordinates.
   {
+    double s = canvas->settings.std_coor ? -1.0 : +1.0;
     h = final_attr.TextFont()->GetHeight();
     w = final_attr.TextFont()->GetWidth();
-    if ( final_attr.text_anchor_x == AnchorX::Min ) x += w / 2;
-    if ( final_attr.text_anchor_x == AnchorX::Mid ) x -= w * (utf8_len - 1.0) / 2;
+    if ( final_attr.text_anchor_x == AnchorX::Min ) x += w * 0.5;
+    if ( final_attr.text_anchor_x == AnchorX::Mid ) x -= w * (utf8_len - 1.0) * 0.5;
     if ( final_attr.text_anchor_x == AnchorX::Max ) x -= w * (utf8_len - 0.5);
-    if ( final_attr.text_anchor_y == AnchorY::Mid ) y -= h / 2;
-    if ( final_attr.text_anchor_y == AnchorY::Max ) y -= h;
-    y += final_attr.TextFont()->GetBaseline();
+    if ( final_attr.text_anchor_y == AnchorY::Mid ) y += s * h * 0.5;
+    if ( final_attr.text_anchor_y == AnchorY::Max && s < 0.0 ) y -= h;
+    if ( final_attr.text_anchor_y == AnchorY::Min && s > 0.0 ) y += h;
+    y = s * y - final_attr.TextFont()->GetBaseline();
   }
 
   oss << indent << "<g" << Attr()->SVG( true ) << '>' << '\n';
@@ -147,8 +149,8 @@ void Text::GenSVG(
       }
       oss
         << indent << "<text"
-        << " x=" << U( +x ).SVG()
-        << " y=" << U( -y ).SVG()
+        << " x=" << x.SVG()
+        << " y=" << y.SVG()
         << '>' << s << "</text>" << '\n';
       x += w;
     }

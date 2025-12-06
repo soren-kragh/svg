@@ -12,6 +12,7 @@
 //
 
 #include <svg_ellipse.h>
+#include <svg_canvas.h>
 
 using namespace SVG;
 
@@ -96,8 +97,8 @@ void Ellipse::GenSVG(
 {
   oss
     << indent << "<ellipse"
-    << " cx=" << U( +center.x ).SVG()
-    << " cy=" << U( -center.y ).SVG()
+    << " cx=" << U( center.x ).SVG()
+    << " cy=" << U( canvas->settings.std_coor ? -center.y : +center.y ).SVG()
     << " rx=" << U( rx ).SVG()
     << " ry=" << U( ry ).SVG()
     << Attr()->SVG()

@@ -402,6 +402,8 @@ int main()
 {
   Canvas* svg_canvas = new Canvas();
 
+  svg_canvas->settings.std_coor = true;
+
   test09( svg_canvas->TopGroup()->AddNewGroup() );
 
   svg_canvas->Background()->Set( ColorName::orange, 0.95 );

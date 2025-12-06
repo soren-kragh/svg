@@ -155,30 +155,32 @@ std::string Object::TransSVG()
 {
   std::ostringstream oss;
 
+  auto sc = canvas->settings.std_coor;
+
   if (
-    transform.translate_dx != 0 || transform.translate_dy != 0 ||
-    transform.rotate_theta != 0
+    transform.translate_dx != 0.0 || transform.translate_dy != 0.0 ||
+    transform.rotate_theta != 0.0
   ) {
     std::string s = "";
     oss << " transform=\"";
-    if ( transform.translate_dx != 0 || transform.translate_dy != 0 ) {
+    if ( transform.translate_dx != 0.0 || transform.translate_dy != 0.0 ) {
       oss
         << s
         << "translate("
-        << U( +transform.translate_dx ).SVG( false ) << ' '
-        << U( -transform.translate_dy ).SVG( false )
+        << U( transform.translate_dx ).SVG( false ) << ' '
+        << U( sc ? -transform.translate_dy : +transform.translate_dy ).SVG( false )
         << ')';
       s = " ";
     }
-    if ( transform.rotate_theta != 0 ) {
+    if ( transform.rotate_theta != 0.0 ) {
       // transform.rotate_point is valid here since Canvas::GenSVG() calls
       // GetBB() on the top group as the first thing.
       oss
         << s
         << "rotate("
-        << U( 360.0 - transform.rotate_theta).SVG( false ) << ' '
-        << U( +transform.rotate_point.x ).SVG( false ) << ' '
-        << U( -transform.rotate_point.y ).SVG( false )
+        << U( sc ? (360.0 - transform.rotate_theta) : transform.rotate_theta ).SVG( false )
+        << ' ' << U( +transform.rotate_point.x ).SVG( false )
+        << ' ' << U( sc ? -transform.rotate_point.y : +transform.rotate_point.y ).SVG( false )
         << ')';
       s = " ";
     }
