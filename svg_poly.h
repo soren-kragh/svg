@@ -22,7 +22,7 @@ class Poly : public Object
 
 public:
 
-  Poly( void ) {}
+  Poly() {}
 
   template< typename... Args >
   Poly( const Args&... args ) : point_list{ args... } {}
@@ -38,7 +38,7 @@ public:
     point_list.emplace_back( x, y );
   }
 
-  void Close( void ) { closed = true; }
+  void Close() { closed = true; }
 
 private:
 

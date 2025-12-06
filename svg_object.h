@@ -30,12 +30,12 @@ class Object
 
 public:
 
-  Object( void ) {}
-  virtual ~Object( void ) {}
+  Object() {}
+  virtual ~Object() {}
 
-  Group* ParentGroup( void );
+  Group* ParentGroup();
 
-  Attributes* Attr( void ) { return &attr; }
+  Attributes* Attr() { return &attr; }
 
   void Move( U dx, U dy )
   {
@@ -78,25 +78,25 @@ public:
   }
 
   // Returns true if the object is empty, i.e. has no defined coordinates.
-  virtual bool Empty( void ) { return false; }
+  virtual bool Empty() { return false; }
 
   // Recursively remove all empty objects; return true if this object thus
   // became empty itself.
-  virtual bool Prune( void ) { return false; }
+  virtual bool Prune() { return false; }
 
   // Return boundary box in parent group. GetBB() errors out when used on empty
   // object as there are no defined coordinates.
-  BoundaryBox GetBB( void );
+  BoundaryBox GetBB();
 
   // Like GetBB(), but returns the boundary box in absolute canvas coordinates.
-  BoundaryBox GetAbsBB( void );
+  BoundaryBox GetAbsBB();
 
 protected:
 
   void CheckTop( std::string_view name );
 
   // Get boundary box without applying transforms.
-  BoundaryBox GetNoTransBB( void );
+  BoundaryBox GetNoTransBB();
 
   virtual void UpdateBB(
     BoundaryBox& boundary_box,
@@ -133,7 +133,7 @@ protected:
     const std::vector< Transform >& transforms, Point p
   );
 
-  std::string TransSVG( void );
+  std::string TransSVG();
 
 };
 

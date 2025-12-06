@@ -18,7 +18,7 @@ using namespace SVG;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Group::~Group( void )
+Group::~Group()
 {
   for ( auto object : objects ) {
     delete object;
@@ -39,7 +39,7 @@ Object* Group::Add( Object* object )
   return object;
 }
 
-void Group::DeleteFront( void )
+void Group::DeleteFront()
 {
   if ( objects.size() > 0 ) {
     Object* obj = objects.back();
@@ -49,7 +49,7 @@ void Group::DeleteFront( void )
   }
 }
 
-void Group::DeleteBack( void )
+void Group::DeleteBack()
 {
   if ( objects.size() > 0 ) {
     Object* obj = objects.front();
@@ -59,7 +59,7 @@ void Group::DeleteBack( void )
   }
 }
 
-void Group::FrontToBack( void )
+void Group::FrontToBack()
 {
   if ( objects.size() > 0 ) {
     objects.push_front( objects.back() );
@@ -67,14 +67,14 @@ void Group::FrontToBack( void )
   }
 }
 
-Group* Group::AddNewGroup( void )
+Group* Group::AddNewGroup()
 {
   Group* g = new Group();
   Add( g );
   return g;
 }
 
-bool Group::Empty( void )
+bool Group::Empty()
 {
   for ( auto object : objects ) {
     if ( !object->Empty() ) return false;
@@ -82,7 +82,7 @@ bool Group::Empty( void )
   return true;
 }
 
-bool Group::Prune( void )
+bool Group::Prune()
 {
   for ( auto it = objects.begin(); it != objects.end(); ) {
     if ( (*it)->Prune() ) {

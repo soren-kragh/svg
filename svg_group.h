@@ -26,28 +26,28 @@ class Group : public Object
 
 public:
 
-  Group( void ) {}
-  ~Group( void );
+  Group() {}
+  ~Group();
 
   Object* Add( Object* object );
 
-  void DeleteFront( void );
-  void DeleteBack( void );
+  void DeleteFront();
+  void DeleteBack();
 
   // Send current front object to the back.
-  void FrontToBack( void );
+  void FrontToBack();
 
   // Creates new group, adds it, then returns it.
-  Group* AddNewGroup( void );
+  Group* AddNewGroup();
 
   // Returns last added object.
-  Object* Last( void ) { return last; }
+  Object* Last() { return last; }
 
-  bool Empty( void ) override;
+  bool Empty() override;
 
   // Recursively remove all empty groups; return true if this group thus became
   // empty itself.
-  bool Prune( void ) override;
+  bool Prune() override;
 
 private:
 

@@ -27,7 +27,7 @@ void Object::CheckTop( std::string_view name )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Group* Object::ParentGroup( void )
+Group* Object::ParentGroup()
 {
   if ( parent_group == nullptr ) {
     SVG_FATAL( "SVG::Object::ParentGroup: object has no parent" );
@@ -58,7 +58,7 @@ Point Object::TransformPoint(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-BoundaryBox Object::GetBB( void )
+BoundaryBox Object::GetBB()
 {
   BoundaryBox bb;
   std::vector< Transform > transforms;
@@ -69,7 +69,7 @@ BoundaryBox Object::GetBB( void )
   return bb;
 }
 
-BoundaryBox Object::GetNoTransBB( void )
+BoundaryBox Object::GetNoTransBB()
 {
   std::vector< Transform > transforms;
   BoundaryBox bb;
@@ -80,7 +80,7 @@ BoundaryBox Object::GetNoTransBB( void )
   return bb;
 }
 
-BoundaryBox Object::GetAbsBB( void )
+BoundaryBox Object::GetAbsBB()
 {
   std::vector< Object* > obj_path;
   auto obj = this;
@@ -151,7 +151,7 @@ void Object::MoveTo(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::string Object::TransSVG( void )
+std::string Object::TransSVG()
 {
   std::ostringstream oss;
 

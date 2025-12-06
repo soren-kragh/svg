@@ -27,7 +27,7 @@ public:
   Text( Point p, std::string_view str ) : Text( p.x, p.y, str ) {}
 
   // Return length of the text (in UTF-8).
-  size_t Length( void ) { return utf8_len; }
+  size_t Length() { return utf8_len; }
 
 private:
 
@@ -48,7 +48,7 @@ private:
 
   void CollectAttr( Attributes& final_attr );
 
-  BoundaryBox GetMyBB( void );
+  BoundaryBox GetMyBB();
 
 public:
 

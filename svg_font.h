@@ -24,7 +24,7 @@ class Font
 
 public:
 
-  Font( void );
+  Font();
   Font( std::string_view family );
   Font( std::string_view family, U size );
 
@@ -41,11 +41,11 @@ public:
   Font* SetHeightFactor( double factor );
   Font* SetBaselineFactor( double factor );
 
-  U GetWidth( void );
-  U GetHeight( void );
-  U GetBaseline( void );
+  U GetWidth();
+  U GetHeight();
+  U GetBaseline();
 
-  std::string SVG( void );
+  std::string SVG();
 
 private:
 

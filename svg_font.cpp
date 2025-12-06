@@ -17,7 +17,7 @@ using namespace SVG;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Font::Font( void )
+Font::Font()
 {
   family_defined = false;
   size_defined = false;
@@ -95,7 +95,7 @@ Font* Font::SetBaselineFactor( double factor )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-U Font::GetWidth( void )
+U Font::GetWidth()
 {
   if ( !family_defined ) {
     SVG_FATAL( "SVG::Font::GetWidth: font family not defined" );
@@ -106,7 +106,7 @@ U Font::GetWidth( void )
   return size * 0.54 * width_factor;
 }
 
-U Font::GetHeight( void )
+U Font::GetHeight()
 {
   if ( !family_defined ) {
     SVG_FATAL( "SVG::Font::GetHeight: font family not defined" );
@@ -117,7 +117,7 @@ U Font::GetHeight( void )
   return size * height_factor;
 }
 
-U Font::GetBaseline( void )
+U Font::GetBaseline()
 {
   if ( !family_defined ) {
     SVG_FATAL( "SVG::Font::GetBaseline: font family not defined" );
@@ -130,7 +130,7 @@ U Font::GetBaseline( void )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::string Font::SVG( void )
+std::string Font::SVG()
 {
   std::ostringstream oss;
 

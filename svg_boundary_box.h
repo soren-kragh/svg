@@ -34,7 +34,7 @@ public:
     return os;
   }
 
-  BoundaryBox( void ) {
+  BoundaryBox() {
     Reset();
   }
   BoundaryBox( Point p1, Point p2 ) {
@@ -61,11 +61,11 @@ public:
     }
   }
 
-  bool Defined( void ) const {
+  bool Defined() const {
     return min.x <= max.x;
   }
 
-  void Reset( void ) {
+  void Reset() {
     min.x = +1;
     max.x = -1;
   }

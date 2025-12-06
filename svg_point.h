@@ -22,7 +22,7 @@ class Point
 
 public:
 
-  Point( void ) {};
+  Point() {};
   Point( U x, U y )
   {
     this->x = x;

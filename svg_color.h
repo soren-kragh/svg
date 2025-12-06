@@ -26,7 +26,7 @@ class Color
 
 public:
 
-  Color( void );
+  Color();
   Color( uint8_t r, uint8_t g, uint8_t b );
   Color( ColorName color, double lighten = 0.0 );
   Color( std::string_view color_name, double lighten = 0.0 );

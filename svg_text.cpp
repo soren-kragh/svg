@@ -49,7 +49,7 @@ void Text::CollectAttr( Attributes& final_attr )
 ////////////////////////////////////////////////////////////////////////////////
 
 // Boundary box of text before any rotation and translation.
-BoundaryBox Text::GetMyBB( void )
+BoundaryBox Text::GetMyBB()
 {
   BoundaryBox bb;
 
@@ -166,7 +166,7 @@ bool Text::UTF8_CharAdv( std::string_view s, size_t& idx )
   uint8_t b;
   uint32_t cp;
 
-  auto do_cont = [&]( void ) {
+  auto do_cont = [&]() {
     if ( idx >= s.size() ) return false;
     b = s[ idx ];
     if ( (b & 0xC0) != 0x80 ) return false;
